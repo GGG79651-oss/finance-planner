@@ -881,14 +881,88 @@ function buildLegend(id,arr,colors){
   const el=document.getElementById(id); if(!el) return;
   el.innerHTML=arr.map((r,i)=>`<div class="legend-row"><div class="legend-dot" style="background:${colors[i%colors.length]}"></div><span class="legend-name">${r.name||'—'}</span><span class="legend-val">${fmt(r.amount)}</span></div>`).join('');
 }
-function drawBars(){
-  const el=document.getElementById('barsOverview'); if(!el) return;
-  const cats=[{l:'Доход',v:total(state.income),c:'#00e5a0'},{l:'Расход',v:total(state.expense),c:'#ff4d6d'},{l:'Долги',v:total(state.debt),c:'#ffd166'},{l:'Инвест',v:total(state.invest),c:'#7c6af7'}];
-  const max=Math.max(...cats.map(c=>c.v),1);
-  el.innerHTML=cats.map(c=>{const h=Math.round((c.v/max)*85);return `<div class="bar-col"><div class="bar-amount">${new Intl.NumberFormat('ru-RU',{notation:'compact',maximumFractionDigits:0}).format(c.v)}</div><div style="flex:1;width:100%;display:flex;align-items:flex-end"><div class="bar-body" style="height:${h}px;background:${c.c}"></div></div><div class="bar-label">${c.l}</div></div>`;}).join('');
+
+
+// ══════════════════════════════════════════════
+// COMPUTE TOTALS (план + история текущего месяца)
+// ══════════════════════════════════════════════
+function computeTotals(){
+  const prefix=`${state.year}-${String(state.month+1).padStart(2,'0')}`;
+  const entries=state.entries||[];
+  const hInc=entries.filter(e=>e.date.startsWith(prefix)&&e.type==='income').reduce((s,e)=>s+e.amount,0);
+  const hExp=entries.filter(e=>e.date.startsWith(prefix)&&e.type==='expense').reduce((s,e)=>s+e.amount,0);
+  const planInc=total(state.income), planExp=total(state.expense);
+  const dbt=total(state.debt), inv=total(state.invest);
+  const totalInc=planInc+hInc, totalExp=planExp+hExp;
+  const bal=totalInc-totalExp-dbt-inv;
+  return {totalInc,totalExp,dbt,inv,bal,hInc,hExp,planInc,planExp};
 }
-function buildProgress(){
-  const inc=total(state.income),exp=total(state.expense),dbt=total(state.debt),inv=total(state.invest);
+
+// ══════════════════════════════════════════════
+// REFRESH
+// ══════════════════════════════════════════════
+function refreshCalc(){
+  const {totalInc,totalExp,dbt,inv,bal}=computeTotals();
+
+  // KPI cards — доходы и расходы включают историю
+  const ki=document.getElementById('kpi-income');  if(ki) ki.textContent=fmt(totalInc);
+  const ke=document.getElementById('kpi-expense'); if(ke) ke.textContent=fmt(totalExp);
+  const kd=document.getElementById('kpi-debt');    if(kd) kd.textContent=fmt(dbt);
+  const kv=document.getElementById('kpi-invest');  if(kv) kv.textContent=fmt(inv);
+
+  // Бюджет — плановые итоги в панелях
+  ['income','expense','debt','invest'].forEach(k=>{
+    const b=document.getElementById('pt-'+k); if(b) b.textContent=fmt(total(state[k]));
+  });
+
+  const bv=document.getElementById('balanceVal');
+  if(bv){bv.textContent=fmt(bal);bv.style.color=bal>=0?'var(--income)':'var(--expense)';}
+  const bs=document.getElementById('balanceSub');
+  if(bs) bs.textContent=bal>=0?'Всё в порядке 👍':'Расходы превышают доходы ⚠️';
+  const bi=document.getElementById('balanceIcon');
+  if(bi) bi.textContent=bal>=0?(bal>50000?'🤑':'💰'):'😬';
+
+  const dv=document.getElementById('donutExpVal');
+  if(dv) dv.textContent=new Intl.NumberFormat('ru-RU',{maximumFractionDigits:0}).format(totalExp||0);
+  const hp=document.getElementById('headerPeriod');
+  if(hp) hp.textContent=MONTHS[state.month]+' '+state.year;
+
+  const iS=document.getElementById('iSavings'); if(iS)iS.textContent=pct(inv,totalInc)+'%';
+  const iD=document.getElementById('iDebt');    if(iD)iD.textContent=pct(dbt,totalInc)+'%';
+  const iE=document.getElementById('iExpense'); if(iE)iE.textContent=pct(totalExp,totalInc)+'%';
+  const iF=document.getElementById('iFree');
+  if(iF){iF.textContent=fmt(bal);iF.style.color=bal>=0?'var(--invest)':'var(--expense)';}
+}
+
+function refresh(){
+  const {totalInc,totalExp,dbt,inv}=computeTotals();
+  refreshCalc();
+
+  // Donut — расходы из истории + план
+  const expenseValues=state.expense.map(r=>r.amount||0);
+  // Добавляем суммарные расходы из истории как отдельный сегмент если есть
+  const prefix=`${state.year}-${String(state.month+1).padStart(2,'0')}`;
+  const hExpItems=(state.entries||[]).filter(e=>e.date.startsWith(prefix)&&e.type==='expense');
+  const hExpColors=[];
+  hExpItems.forEach(()=>hExpColors.push('#ff6b8a'));
+  const donutValues=[...expenseValues,...hExpItems.map(e=>e.amount||0)];
+  const donutColors=[...COLORS.expense,...hExpColors];
+  drawDonut('donutExpense',donutValues,donutColors,26);
+
+  // Легенда
+  const legendItems=[...state.expense];
+  if(hExpItems.length){
+    // группируем доп. расходы из истории
+    const hTotal=hExpItems.reduce((s,e)=>s+e.amount,0);
+    if(hTotal>0) legendItems.push({name:'Из истории',amount:hTotal});
+  }
+  buildLegend('legendExpense',legendItems,[...COLORS.expense,'#ff6b8a']);
+
+  buildProgressWithTotals(totalInc,totalExp,dbt,inv);
+  drawBarsWithTotals(totalInc,totalExp,dbt,inv);
+}
+
+function buildProgressWithTotals(inc,exp,dbt,inv){
   const el=document.getElementById('progressWrap'); if(!el) return; el.innerHTML='';
   [{l:'Расходы',c:'#ff4d6d',v:exp},{l:'Долги',c:'#ffd166',v:dbt},{l:'Инвестиции',c:'#7c6af7',v:inv}].forEach(it=>{
     const p=Math.min(pct(it.v,inc),100);
@@ -896,41 +970,11 @@ function buildProgress(){
   });
 }
 
-// ══════════════════════════════════════════════
-// REFRESH
-// ══════════════════════════════════════════════
-function refreshCalc(){
-  const inc=total(state.income),exp=total(state.expense),dbt=total(state.debt),inv=total(state.invest);
-  // add history entries for current month
-  const prefix=`${state.year}-${String(state.month+1).padStart(2,'0')}`;
-  const hInc=(state.entries||[]).filter(e=>e.date.startsWith(prefix)&&e.type==='income').reduce((s,e)=>s+e.amount,0);
-  const hExp=(state.entries||[]).filter(e=>e.date.startsWith(prefix)&&e.type==='expense').reduce((s,e)=>s+e.amount,0);
-  const totalInc=inc+hInc, totalExp=exp+hExp;
-  const bal=totalInc-totalExp-dbt-inv;
-
-  ['income','expense','debt','invest'].forEach(k=>{
-    const a=document.getElementById('kpi-'+k); if(a) a.textContent=fmt(total(state[k]));
-    const b=document.getElementById('pt-'+k);  if(b) b.textContent=fmt(total(state[k]));
-  });
-  // Override income/expense KPI with history-inclusive totals
-  const ki=document.getElementById('kpi-income'); if(ki) ki.textContent=fmt(totalInc);
-  const ke=document.getElementById('kpi-expense'); if(ke) ke.textContent=fmt(totalExp);
-
-  const bv=document.getElementById('balanceVal'); if(bv){bv.textContent=fmt(bal);bv.style.color=bal>=0?'var(--income)':'var(--expense)';}
-  const bs=document.getElementById('balanceSub'); if(bs) bs.textContent=bal>=0?'Всё в порядке 👍':'Расходы превышают доходы ⚠️';
-  const bi=document.getElementById('balanceIcon'); if(bi) bi.textContent=bal>=0?(bal>50000?'🤑':'💰'):'😬';
-  const dv=document.getElementById('donutExpVal'); if(dv) dv.textContent=new Intl.NumberFormat('ru-RU',{maximumFractionDigits:0}).format(totalExp||0);
-  const hp=document.getElementById('headerPeriod'); if(hp) hp.textContent=MONTHS[state.month]+' '+state.year;
-  const iS=document.getElementById('iSavings');if(iS)iS.textContent=pct(inv,totalInc)+'%';
-  const iD=document.getElementById('iDebt');   if(iD)iD.textContent=pct(dbt,totalInc)+'%';
-  const iE=document.getElementById('iExpense');if(iE)iE.textContent=pct(totalExp,totalInc)+'%';
-  const iF=document.getElementById('iFree');   if(iF){iF.textContent=fmt(bal);iF.style.color=bal>=0?'var(--invest)':'var(--expense)';}
-}
-function refresh(){
-  refreshCalc();
-  drawDonut('donutExpense',state.expense.map(r=>r.amount||0),COLORS.expense,26);
-  buildLegend('legendExpense',state.expense,COLORS.expense);
-  buildProgress(); drawBars();
+function drawBarsWithTotals(inc,exp,dbt,inv){
+  const el=document.getElementById('barsOverview'); if(!el) return;
+  const cats=[{l:'Доход',v:inc,c:'#00e5a0'},{l:'Расход',v:exp,c:'#ff4d6d'},{l:'Долги',v:dbt,c:'#ffd166'},{l:'Инвест',v:inv,c:'#7c6af7'}];
+  const max=Math.max(...cats.map(c=>c.v),1);
+  el.innerHTML=cats.map(c=>{const h=Math.round((c.v/max)*85);return `<div class="bar-col"><div class="bar-amount">${new Intl.NumberFormat('ru-RU',{notation:'compact',maximumFractionDigits:0}).format(c.v)}</div><div style="flex:1;width:100%;display:flex;align-items:flex-end"><div class="bar-body" style="height:${h}px;background:${c.c}"></div></div><div class="bar-label">${c.l}</div></div>`;}).join('');
 }
 
 // ══════════════════════════════════════════════
