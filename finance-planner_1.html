@@ -1,0 +1,911 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Финансовый Планёр</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap');
+
+  :root {
+    --bg: #0a0a0f;
+    --surface: #111118;
+    --surface2: #181825;
+    --border: #252535;
+    --border2: #2e2e45;
+    --text: #e8e8f0;
+    --text2: #8888aa;
+    --income: #00e5a0;
+    --expense: #ff4d6d;
+    --debt: #ffd166;
+    --invest: #7c6af7;
+  }
+
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Inter', sans-serif;
+    font-size: 13px;
+    min-height: 100vh;
+    padding: 16px;
+  }
+
+  /* ── HEADER ── */
+  .header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 18px;
+    padding-bottom: 14px;
+    border-bottom: 1px solid var(--border);
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+  .logo { font-size: 20px; font-weight: 800; letter-spacing: -0.5px; }
+  .logo span { color: var(--income); }
+  .header-right { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
+  .period-controls { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
+  .period-controls label { color: var(--text2); font-size: 12px; }
+  .period-controls select, .period-controls input {
+    background: var(--surface2); border: 1px solid var(--border2);
+    color: var(--text); border-radius: 6px; padding: 5px 10px;
+    font-size: 12px; font-family: inherit; outline: none; cursor: pointer;
+  }
+  .period-controls select:focus, .period-controls input:focus { border-color: var(--invest); }
+
+  /* save indicator */
+  .save-indicator {
+    font-size: 11px; color: var(--text2);
+    display: flex; align-items: center; gap: 5px;
+    transition: color 0.3s;
+  }
+  .save-indicator.saved { color: var(--income); }
+  .save-dot {
+    width: 6px; height: 6px; border-radius: 50%;
+    background: var(--text2); transition: background 0.3s;
+  }
+  .save-indicator.saved .save-dot { background: var(--income); }
+
+  /* action buttons */
+  .action-btn {
+    background: var(--surface2); border: 1px solid var(--border2);
+    color: var(--text2); font-size: 11px; font-family: inherit;
+    padding: 5px 12px; border-radius: 6px; cursor: pointer;
+    transition: all 0.2s;
+  }
+  .action-btn:hover { border-color: var(--text); color: var(--text); }
+  .action-btn.danger:hover { border-color: var(--expense); color: var(--expense); }
+
+  /* ── KPI CARDS ── */
+  .kpi-row {
+    display: grid; grid-template-columns: repeat(4,1fr);
+    gap: 12px; margin-bottom: 18px;
+  }
+  .kpi {
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: 12px; padding: 16px 18px;
+    position: relative; overflow: hidden;
+  }
+  .kpi::before { content:''; position:absolute; top:0;left:0;right:0; height:2px; }
+  .kpi.income::before { background: var(--income); }
+  .kpi.expense::before { background: var(--expense); }
+  .kpi.debt::before { background: var(--debt); }
+  .kpi.invest::before { background: var(--invest); }
+  .kpi-label {
+    font-size: 10px; font-weight: 600; letter-spacing: 1.2px;
+    text-transform: uppercase; margin-bottom: 8px;
+  }
+  .kpi.income .kpi-label { color: var(--income); }
+  .kpi.expense .kpi-label { color: var(--expense); }
+  .kpi.debt .kpi-label { color: var(--debt); }
+  .kpi.invest .kpi-label { color: var(--invest); }
+  .kpi-value {
+    font-size: 24px; font-weight: 700;
+    font-family: 'JetBrains Mono', monospace; letter-spacing: -0.5px;
+  }
+  .kpi.income .kpi-value { color: var(--income); }
+  .kpi.expense .kpi-value { color: var(--expense); }
+  .kpi.debt .kpi-value { color: var(--debt); }
+  .kpi.invest .kpi-value { color: var(--invest); }
+  .kpi-sub { margin-top: 6px; font-size: 11px; color: var(--text2); }
+
+  /* ── CHARTS ROW ── */
+  .charts-row {
+    display: grid; grid-template-columns: 1.3fr 1fr;
+    gap: 14px; margin-bottom: 14px;
+  }
+
+  /* ── PANELS ── */
+  .panel {
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: 12px; padding: 16px;
+  }
+  .panel.income { border-color: rgba(0,229,160,0.25); }
+  .panel.expense { border-color: rgba(255,77,109,0.25); }
+  .panel.debt { border-color: rgba(255,209,102,0.25); }
+  .panel.invest { border-color: rgba(124,106,247,0.25); }
+  .panel-title {
+    font-size: 11px; font-weight: 700; letter-spacing: 1.4px;
+    text-transform: uppercase; margin-bottom: 14px;
+    display: flex; align-items: center; justify-content: space-between;
+  }
+  .panel.income .panel-title { color: var(--income); }
+  .panel.expense .panel-title { color: var(--expense); }
+  .panel.debt .panel-title { color: var(--debt); }
+  .panel.invest .panel-title { color: var(--invest); }
+
+  /* ── TABLES ── */
+  .data-table { width: 100%; border-collapse: collapse; }
+  .data-table th {
+    text-align: left; font-size: 10px; font-weight: 600;
+    color: var(--text2); letter-spacing: 0.8px; text-transform: uppercase;
+    padding: 0 4px 8px; border-bottom: 1px solid var(--border);
+  }
+  .data-table td {
+    padding: 7px 4px; font-size: 12px;
+    border-bottom: 1px solid rgba(255,255,255,0.03); vertical-align: middle;
+  }
+  .data-table tr:last-child td { border-bottom: none; }
+  .data-table td input[type=text] {
+    background: transparent; border: none; color: var(--text);
+    font-family: inherit; font-size: 12px; width: 100%; outline: none; padding: 2px 0;
+  }
+  .data-table td input[type=text]:focus {
+    background: rgba(255,255,255,0.05); border-radius: 4px; padding: 2px 6px;
+  }
+  .data-table td input[type=number] {
+    background: transparent; border: none;
+    font-family: 'JetBrains Mono', monospace; font-size: 11px;
+    width: 85px; text-align: right; outline: none; padding: 2px 0;
+  }
+  .data-table td input[type=number]:focus {
+    background: rgba(255,255,255,0.05); border-radius: 4px; padding: 2px 6px;
+  }
+  .total-row td {
+    font-weight: 700; font-size: 12px; padding-top: 10px;
+    border-top: 1px solid var(--border2) !important;
+  }
+  .add-row-btn {
+    background: none; border: 1px dashed var(--border2); color: var(--text2);
+    font-size: 11px; width: 100%; padding: 6px; border-radius: 6px;
+    cursor: pointer; margin-top: 8px; font-family: inherit; transition: all 0.2s;
+  }
+  .add-row-btn:hover { border-color: var(--text2); color: var(--text); }
+  .del-btn {
+    background: none; border: none; color: var(--border2);
+    cursor: pointer; font-size: 15px; padding: 0 4px; line-height: 1; transition: color 0.15s;
+  }
+  .del-btn:hover { color: var(--expense); }
+
+  /* ── CHARTS ── */
+  .chart-wrap {
+    position: relative; display: flex;
+    align-items: center; justify-content: center;
+  }
+  canvas { display: block; }
+  .donut-center { position: absolute; text-align: center; pointer-events: none; }
+  .donut-center .dc-val {
+    font-size: 17px; font-weight: 700;
+    font-family: 'JetBrains Mono', monospace; color: var(--text);
+  }
+  .donut-center .dc-lbl { font-size: 10px; color: var(--text2); margin-top: 2px; }
+  .legend { display: flex; flex-direction: column; gap: 6px; }
+  .legend-item { display: flex; align-items: center; gap: 8px; font-size: 11px; color: var(--text2); }
+  .legend-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+  .legend-item span:last-child {
+    margin-left: auto; font-family: 'JetBrains Mono', monospace;
+    font-size: 10px; color: var(--text);
+  }
+
+  /* ── BAR CHART ── */
+  .bar-chart { display: flex; align-items: flex-end; gap: 8px; height: 130px; padding: 8px 0 0; }
+  .bar-group { flex: 1; display: flex; flex-direction: column; align-items: center; gap: 4px; }
+  .bar-pair { display: flex; align-items: flex-end; gap: 2px; height: 100px; }
+  .bar { width: 22px; border-radius: 3px 3px 0 0; transition: opacity 0.2s; }
+  .bar:hover { opacity: 0.75; }
+  .bar-lbl { font-size: 10px; color: var(--text2); white-space: nowrap; }
+
+  /* ── SUMMARY ── */
+  .summary-table { width: 100%; }
+  .summary-table tr td { padding: 8px 4px; font-size: 12px; border-bottom: 1px solid rgba(255,255,255,0.04); }
+  .summary-table tr td:last-child {
+    text-align: right; font-family: 'JetBrains Mono', monospace;
+    font-size: 11px; font-weight: 600;
+  }
+  .summary-table .s-label { color: var(--text2); }
+  .balance-row td { font-size: 14px !important; font-weight: 700 !important; padding-top: 12px !important; }
+
+  /* ── PROGRESS ── */
+  .progress-item { margin-bottom: 12px; }
+  .progress-row { display: flex; justify-content: space-between; margin-bottom: 5px; font-size: 11px; }
+  .progress-lbl { color: var(--text2); }
+  .progress-val { font-family: 'JetBrains Mono', monospace; color: var(--text); font-size: 11px; }
+  .progress-track { height: 4px; background: var(--border2); border-radius: 2px; overflow: hidden; }
+  .progress-fill { height: 100%; border-radius: 2px; transition: width 0.5s ease; }
+
+  /* ── ANALYTICS ── */
+  .insight-card { background: var(--surface2); border-radius: 8px; padding: 14px; font-size: 12px; }
+  .insight-val {
+    font-size: 20px; font-weight: 700;
+    font-family: 'JetBrains Mono', monospace; margin: 6px 0 4px;
+  }
+  .insight-desc { color: var(--text2); font-size: 11px; }
+  .section-label {
+    font-size: 10px; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase;
+    color: var(--text2); margin-bottom: 12px; padding-bottom: 8px; border-bottom: 1px solid var(--border);
+    opacity: 0.5;
+  }
+
+  .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+  .four-col { display: grid; grid-template-columns: repeat(4,1fr); gap: 14px; }
+
+  /* ── TOAST ── */
+  .toast {
+    position: fixed; bottom: 24px; right: 24px;
+    background: var(--surface2); border: 1px solid var(--border2);
+    color: var(--text); padding: 10px 18px; border-radius: 8px;
+    font-size: 12px; z-index: 999;
+    transform: translateY(60px); opacity: 0;
+    transition: all 0.3s;
+    pointer-events: none;
+  }
+  .toast.show { transform: translateY(0); opacity: 1; }
+  .toast.ok { border-color: var(--income); color: var(--income); }
+
+  /* ── MODAL ── */
+  .modal-backdrop {
+    display: none; position: fixed; inset: 0;
+    background: rgba(0,0,0,0.7); z-index: 100;
+    align-items: center; justify-content: center;
+  }
+  .modal-backdrop.open { display: flex; }
+  .modal {
+    background: var(--surface); border: 1px solid var(--border2);
+    border-radius: 14px; padding: 24px; width: 460px; max-width: 95vw;
+  }
+  .modal h3 { margin-bottom: 14px; font-size: 15px; }
+  .modal textarea {
+    width: 100%; height: 200px; background: var(--bg);
+    border: 1px solid var(--border2); color: var(--text);
+    border-radius: 8px; padding: 10px; font-family: 'JetBrains Mono', monospace;
+    font-size: 11px; resize: vertical; outline: none;
+  }
+  .modal-actions { display: flex; gap: 8px; margin-top: 12px; justify-content: flex-end; }
+
+  ::-webkit-scrollbar { width: 4px; }
+  ::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 2px; }
+
+  select option { background: #181825; }
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<div class="header">
+  <div class="logo">Финансовый<span>.</span>Планёр</div>
+
+  <div class="header-right">
+    <div class="save-indicator" id="saveIndicator">
+      <div class="save-dot"></div>
+      <span id="saveText">Сохранено</span>
+    </div>
+
+    <div class="period-controls">
+      <label>Месяц</label>
+      <select id="selMonth">
+        <option value="0">Январь</option><option value="1">Февраль</option>
+        <option value="2">Март</option><option value="3">Апрель</option>
+        <option value="4">Май</option><option value="5">Июнь</option>
+        <option value="6">Июль</option><option value="7">Август</option>
+        <option value="8">Сентябрь</option><option value="9">Октябрь</option>
+        <option value="10">Ноябрь</option><option value="11">Декабрь</option>
+      </select>
+      <label>Год</label>
+      <input type="number" id="selYear" min="2020" max="2035" style="width:70px">
+      <label>Валюта</label>
+      <select id="selCurrency">
+        <option value="₽">₽ Рубль</option>
+        <option value="$">$ Доллар</option>
+        <option value="€">€ Евро</option>
+      </select>
+    </div>
+
+    <button class="action-btn" onclick="openExport()">↑ Экспорт</button>
+    <button class="action-btn" onclick="openImport()">↓ Импорт</button>
+    <button class="action-btn danger" onclick="confirmReset()">Сброс</button>
+  </div>
+</div>
+
+<!-- KPI -->
+<div class="kpi-row">
+  <div class="kpi income">
+    <div class="kpi-label">Доходы</div>
+    <div class="kpi-value" id="kpi-income">0 ₽</div>
+    <div class="kpi-sub">Всего поступлений</div>
+  </div>
+  <div class="kpi expense">
+    <div class="kpi-label">Расходы</div>
+    <div class="kpi-value" id="kpi-expense">0 ₽</div>
+    <div class="kpi-sub">Обязательные + прочие</div>
+  </div>
+  <div class="kpi debt">
+    <div class="kpi-label">Долги</div>
+    <div class="kpi-value" id="kpi-debt">0 ₽</div>
+    <div class="kpi-sub">Кредиты и займы</div>
+  </div>
+  <div class="kpi invest">
+    <div class="kpi-label">Инвестиции</div>
+    <div class="kpi-value" id="kpi-invest">0 ₽</div>
+    <div class="kpi-sub">Вложения и накопления</div>
+  </div>
+</div>
+
+<!-- CHARTS -->
+<div class="charts-row">
+  <div class="panel" style="display:flex; gap:20px; align-items:center;">
+    <div>
+      <div class="panel-title" style="color:var(--text2)">Структура расходов</div>
+      <div class="chart-wrap" style="width:190px; height:190px;">
+        <canvas id="donutChart" width="190" height="190"></canvas>
+        <div class="donut-center">
+          <div class="dc-val" id="donutTotal">0</div>
+          <div class="dc-lbl">Расходы</div>
+        </div>
+      </div>
+    </div>
+    <div style="flex:1; overflow:hidden;">
+      <div id="expLegend" class="legend"></div>
+    </div>
+  </div>
+
+  <div style="display:flex; flex-direction:column; gap:14px;">
+    <div class="panel">
+      <div class="panel-title" style="color:var(--text2)">Сводка месяца</div>
+      <table class="summary-table">
+        <tr><td class="s-label">Доходы</td><td id="sum-income" style="color:var(--income)">0 ₽</td></tr>
+        <tr><td class="s-label">Расходы</td><td id="sum-expense" style="color:var(--expense)">0 ₽</td></tr>
+        <tr><td class="s-label">Долги</td><td id="sum-debt" style="color:var(--debt)">0 ₽</td></tr>
+        <tr><td class="s-label">Инвестиции</td><td id="sum-invest" style="color:var(--invest)">0 ₽</td></tr>
+        <tr class="balance-row"><td>Остаток</td><td id="sum-balance">0 ₽</td></tr>
+      </table>
+    </div>
+    <div class="panel">
+      <div class="panel-title" style="color:var(--text2)">Обзор</div>
+      <div class="bar-chart" id="overviewBar"></div>
+    </div>
+  </div>
+</div>
+
+<!-- DATA PANELS -->
+<div class="four-col" style="margin-bottom:14px;">
+
+  <div class="panel income">
+    <div class="panel-title">Доходы</div>
+    <table class="data-table" id="incomeTable">
+      <thead><tr><th>Статья</th><th style="text-align:right">Сумма</th><th style="width:20px"></th></tr></thead>
+      <tbody></tbody>
+      <tfoot><tr class="total-row">
+        <td style="color:var(--text2)">Итого</td>
+        <td id="income-total" style="color:var(--income);text-align:right;font-family:'JetBrains Mono',monospace;font-size:11px;">0 ₽</td>
+        <td></td>
+      </tr></tfoot>
+    </table>
+    <button class="add-row-btn" onclick="addRow('income')">+ Добавить статью</button>
+  </div>
+
+  <div class="panel expense">
+    <div class="panel-title">Расходы</div>
+    <table class="data-table" id="expenseTable">
+      <thead><tr><th>Статья</th><th style="text-align:right">Сумма</th><th style="width:20px"></th></tr></thead>
+      <tbody></tbody>
+      <tfoot><tr class="total-row">
+        <td style="color:var(--text2)">Итого</td>
+        <td id="expense-total" style="color:var(--expense);text-align:right;font-family:'JetBrains Mono',monospace;font-size:11px;">0 ₽</td>
+        <td></td>
+      </tr></tfoot>
+    </table>
+    <button class="add-row-btn" onclick="addRow('expense')">+ Добавить статью</button>
+  </div>
+
+  <div class="panel debt">
+    <div class="panel-title">Долги</div>
+    <table class="data-table" id="debtTable">
+      <thead><tr><th>Статья</th><th style="text-align:right">Сумма</th><th style="width:20px"></th></tr></thead>
+      <tbody></tbody>
+      <tfoot><tr class="total-row">
+        <td style="color:var(--text2)">Итого</td>
+        <td id="debt-total" style="color:var(--debt);text-align:right;font-family:'JetBrains Mono',monospace;font-size:11px;">0 ₽</td>
+        <td></td>
+      </tr></tfoot>
+    </table>
+    <button class="add-row-btn" onclick="addRow('debt')">+ Добавить статью</button>
+  </div>
+
+  <div class="panel invest">
+    <div class="panel-title">Инвестиции</div>
+    <table class="data-table" id="investTable">
+      <thead><tr><th>Статья</th><th style="text-align:right">Сумма</th><th style="width:20px"></th></tr></thead>
+      <tbody></tbody>
+      <tfoot><tr class="total-row">
+        <td style="color:var(--text2)">Итого</td>
+        <td id="invest-total" style="color:var(--invest);text-align:right;font-family:'JetBrains Mono',monospace;font-size:11px;">0 ₽</td>
+        <td></td>
+      </tr></tfoot>
+    </table>
+    <button class="add-row-btn" onclick="addRow('invest')">+ Добавить статью</button>
+  </div>
+
+</div>
+
+<!-- ANALYTICS -->
+<div style="margin-bottom:10px;"><div class="section-label">Аналитика</div></div>
+<div class="two-col" style="margin-bottom:14px;">
+
+  <div class="panel">
+    <div class="panel-title" style="color:var(--text2)">Ключевые показатели</div>
+    <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px;">
+      <div class="insight-card">
+        <div style="color:var(--text2);font-size:11px;">Норма сбережений</div>
+        <div class="insight-val" id="savingsRate" style="color:var(--income)">0%</div>
+        <div class="insight-desc">от общего дохода</div>
+      </div>
+      <div class="insight-card">
+        <div style="color:var(--text2);font-size:11px;">Долговая нагрузка</div>
+        <div class="insight-val" id="debtRatio" style="color:var(--debt)">0%</div>
+        <div class="insight-desc">от дохода</div>
+      </div>
+      <div class="insight-card">
+        <div style="color:var(--text2);font-size:11px;">Расходы / доход</div>
+        <div class="insight-val" id="expenseRatio" style="color:var(--expense)">0%</div>
+        <div class="insight-desc">коэффициент трат</div>
+      </div>
+      <div class="insight-card">
+        <div style="color:var(--text2);font-size:11px;">Свободные средства</div>
+        <div class="insight-val" id="freeBalance">0 ₽</div>
+        <div class="insight-desc">после всех расходов</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="panel">
+    <div class="panel-title" style="color:var(--text2)">Структура бюджета</div>
+    <div id="progressBars"></div>
+    <div style="margin-top:14px; border-top:1px solid var(--border); padding-top:14px;">
+      <div style="font-size:11px; color:var(--text2); margin-bottom:10px;">Структура доходов</div>
+      <div style="display:flex; align-items:center; gap:16px;">
+        <div class="chart-wrap" style="width:90px; height:90px;">
+          <canvas id="incomeDonut" width="90" height="90"></canvas>
+        </div>
+        <div id="incomeLegend" class="legend" style="flex:1;"></div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<!-- TOAST -->
+<div class="toast" id="toast"></div>
+
+<!-- EXPORT MODAL -->
+<div class="modal-backdrop" id="exportModal">
+  <div class="modal">
+    <h3>📤 Экспорт данных</h3>
+    <p style="color:var(--text2);font-size:12px;margin-bottom:10px;">
+      Скопируйте этот JSON и сохраните в файл — его можно импортировать на другом устройстве.
+    </p>
+    <textarea id="exportArea" readonly onclick="this.select()"></textarea>
+    <div class="modal-actions">
+      <button class="action-btn" onclick="copyExport()">Скопировать</button>
+      <button class="action-btn" onclick="downloadExport()">Скачать файл</button>
+      <button class="action-btn" onclick="closeModal('exportModal')">Закрыть</button>
+    </div>
+  </div>
+</div>
+
+<!-- IMPORT MODAL -->
+<div class="modal-backdrop" id="importModal">
+  <div class="modal">
+    <h3>📥 Импорт данных</h3>
+    <p style="color:var(--text2);font-size:12px;margin-bottom:10px;">
+      Вставьте JSON, который вы экспортировали с другого устройства.
+    </p>
+    <textarea id="importArea" placeholder="Вставьте JSON сюда..."></textarea>
+    <div class="modal-actions">
+      <button class="action-btn" onclick="doImport()">Импортировать</button>
+      <button class="action-btn" onclick="closeModal('importModal')">Отмена</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// ────────────────────────────────────────────────
+// CONSTANTS
+// ────────────────────────────────────────────────
+const STORAGE_KEY = 'fin_planner_v1';
+const COLORS = {
+  income:  ['#00e5a0','#00b87d','#34d48a','#6ee7b7','#a7f3d0','#059669'],
+  expense: ['#ff4d6d','#e63251','#ff7096','#f43f5e','#fda4af','#fb7185','#ff6b8a'],
+  debt:    ['#ffd166','#f59e0b','#fbbf24','#d97706','#fde68a'],
+  invest:  ['#7c6af7','#5b4fcf','#a78bfa','#6d28d9','#8b5cf6','#c4b5fd']
+};
+
+const DEFAULT_DATA = {
+  month: new Date().getMonth(),
+  year:  new Date().getFullYear(),
+  currency: '₽',
+  income: [
+    {name:'Зарплата',   amount:85000},
+    {name:'Фриланс',    amount:25000},
+    {name:'Дивиденды',  amount:5000}
+  ],
+  expense: [
+    {name:'Аренда жилья',       amount:30000},
+    {name:'Продукты',            amount:15000},
+    {name:'Транспорт',           amount:5000},
+    {name:'Мобильная связь',     amount:800},
+    {name:'Интернет',            amount:600},
+    {name:'Кафе & Рестораны',    amount:8000},
+    {name:'Развлечения',         amount:4000}
+  ],
+  debt: [
+    {name:'Ипотека', amount:25000},
+    {name:'Кредит',  amount:7000}
+  ],
+  invest: [
+    {name:'Акции',              amount:10000},
+    {name:'ОФЗ / Облигации',    amount:5000},
+    {name:'Накопительный счёт', amount:5000}
+  ]
+};
+
+// ────────────────────────────────────────────────
+// STATE — загружаем из localStorage или дефолт
+// ────────────────────────────────────────────────
+let state = loadState();
+let saveTimer = null;
+
+function loadState() {
+  try {
+    const raw = localStorage.getItem(STORAGE_KEY);
+    if (raw) {
+      const parsed = JSON.parse(raw);
+      // Добавляем недостающие поля если структура старая
+      return Object.assign({}, DEFAULT_DATA, parsed);
+    }
+  } catch(e) {}
+  return JSON.parse(JSON.stringify(DEFAULT_DATA));
+}
+
+function saveState() {
+  try {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+    showSaved();
+  } catch(e) {
+    showToast('⚠ Не удалось сохранить', false);
+  }
+}
+
+// Debounce — сохраняем не чаще чем раз в 600ms
+function scheduleSave() {
+  setSaveIndicator(false);
+  clearTimeout(saveTimer);
+  saveTimer = setTimeout(saveState, 600);
+}
+
+function showSaved() {
+  const el = document.getElementById('saveIndicator');
+  const txt = document.getElementById('saveText');
+  el.classList.add('saved');
+  txt.textContent = 'Сохранено';
+  setTimeout(() => {
+    el.classList.remove('saved');
+    txt.textContent = 'Сохранено';
+  }, 2000);
+}
+
+function setSaveIndicator(saved) {
+  const el = document.getElementById('saveIndicator');
+  const txt = document.getElementById('saveText');
+  if (!saved) {
+    el.classList.remove('saved');
+    txt.textContent = 'Сохраняю...';
+  }
+}
+
+// ────────────────────────────────────────────────
+// HELPERS
+// ────────────────────────────────────────────────
+function fmt(n) {
+  return new Intl.NumberFormat('ru-RU',{maximumFractionDigits:0}).format(n||0) + ' ' + state.currency;
+}
+function pct(a,b) { return b ? Math.round(a/b*100) : 0; }
+function total(arr) { return arr.reduce((s,r) => s + (parseFloat(r.amount)||0), 0); }
+
+// ────────────────────────────────────────────────
+// RENDER TABLES
+// ────────────────────────────────────────────────
+function renderTable(key) {
+  const tbody = document.querySelector(`#${key}Table tbody`);
+  tbody.innerHTML = '';
+  state[key].forEach((row, i) => {
+    const color = COLORS[key][i % COLORS[key].length];
+    const tr = document.createElement('tr');
+    // sanitize to prevent XSS in value attribute
+    const safeName = row.name.replace(/"/g,'&quot;');
+    tr.innerHTML = `
+      <td style="width:100%">
+        <input type="text" value="${safeName}" placeholder="Статья"
+          oninput="state['${key}'][${i}].name=this.value; scheduleSave(); refreshCalc();">
+      </td>
+      <td>
+        <input type="number" value="${row.amount||''}" placeholder="0" min="0"
+          oninput="state['${key}'][${i}].amount=parseFloat(this.value)||0; scheduleSave(); refresh();"
+          style="color:${color}">
+      </td>
+      <td><button class="del-btn" onclick="delRow('${key}',${i})">×</button></td>
+    `;
+    tbody.appendChild(tr);
+  });
+}
+
+function addRow(key) {
+  state[key].push({name:'', amount:0});
+  renderTable(key);
+  refresh();
+  scheduleSave();
+  // focus new name input
+  const tbody = document.querySelector(`#${key}Table tbody`);
+  const last = tbody.querySelector('tr:last-child input[type=text]');
+  if (last) last.focus();
+}
+
+function delRow(key, i) {
+  state[key].splice(i, 1);
+  renderTable(key);
+  refresh();
+  scheduleSave();
+}
+
+// ────────────────────────────────────────────────
+// CHARTS
+// ────────────────────────────────────────────────
+function drawDonut(canvasId, values, colors, lw) {
+  const canvas = document.getElementById(canvasId);
+  if (!canvas) return;
+  const ctx = canvas.getContext('2d');
+  const W = canvas.width, H = canvas.height;
+  ctx.clearRect(0,0,W,H);
+  const cx = W/2, cy = H/2, r = Math.min(W,H)/2 - lw/2;
+  const sum = values.reduce((a,b)=>a+b, 0);
+  if (!sum) {
+    ctx.beginPath(); ctx.arc(cx,cy,r,0,Math.PI*2);
+    ctx.strokeStyle='#252535'; ctx.lineWidth=lw; ctx.stroke(); return;
+  }
+  let angle = -Math.PI/2;
+  values.forEach((v,i) => {
+    if (!v) return;
+    const slice = (v/sum)*Math.PI*2;
+    ctx.beginPath(); ctx.arc(cx,cy,r,angle,angle+slice);
+    ctx.strokeStyle = colors[i % colors.length];
+    ctx.lineWidth = lw; ctx.lineCap = 'butt'; ctx.stroke();
+    angle += slice;
+  });
+}
+
+function drawBars() {
+  const el = document.getElementById('overviewBar');
+  const cats = [
+    {label:'Доход',  val:total(state.income),  color:'#00e5a0'},
+    {label:'Расход', val:total(state.expense),  color:'#ff4d6d'},
+    {label:'Долги',  val:total(state.debt),     color:'#ffd166'},
+    {label:'Инвест', val:total(state.invest),   color:'#7c6af7'}
+  ];
+  const max = Math.max(...cats.map(c=>c.val), 1);
+  el.innerHTML = cats.map(c => {
+    const h = Math.round((c.val/max)*90);
+    return `<div class="bar-group">
+      <div class="bar-pair">
+        <div class="bar" style="height:${h}px;background:${c.color};width:28px;" title="${fmt(c.val)}"></div>
+      </div>
+      <div class="bar-lbl">${c.label}</div>
+    </div>`;
+  }).join('');
+}
+
+function buildLegend(containerId, arr, colors) {
+  const el = document.getElementById(containerId);
+  if (!el) return;
+  el.innerHTML = arr.map((r,i) => `
+    <div class="legend-item">
+      <div class="legend-dot" style="background:${colors[i%colors.length]}"></div>
+      <span style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:100px;">${r.name||'—'}</span>
+      <span>${fmt(r.amount)}</span>
+    </div>`).join('');
+}
+
+function buildProgress() {
+  const inc = total(state.income);
+  const exp = total(state.expense);
+  const dbt = total(state.debt);
+  const inv = total(state.invest);
+  const el = document.getElementById('progressBars');
+  const items = [
+    {label:'Расходы',    color:'#ff4d6d', val:exp},
+    {label:'Долги',      color:'#ffd166', val:dbt},
+    {label:'Инвестиции', color:'#7c6af7', val:inv},
+  ];
+  el.innerHTML = items.map(it => {
+    const p = Math.min(pct(it.val, inc), 100);
+    return `<div class="progress-item">
+      <div class="progress-row">
+        <span class="progress-lbl">${it.label}</span>
+        <span class="progress-val">${p}% · ${fmt(it.val)}</span>
+      </div>
+      <div class="progress-track">
+        <div class="progress-fill" style="width:${p}%;background:${it.color}"></div>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+// ────────────────────────────────────────────────
+// KPI & ANALYTICS (без перерисовки таблиц)
+// ────────────────────────────────────────────────
+function refreshCalc() {
+  const inc = total(state.income);
+  const exp = total(state.expense);
+  const dbt = total(state.debt);
+  const inv = total(state.invest);
+  const balance = inc - exp - dbt - inv;
+
+  document.getElementById('kpi-income').textContent  = fmt(inc);
+  document.getElementById('kpi-expense').textContent = fmt(exp);
+  document.getElementById('kpi-debt').textContent    = fmt(dbt);
+  document.getElementById('kpi-invest').textContent  = fmt(inv);
+
+  document.getElementById('sum-income').textContent  = fmt(inc);
+  document.getElementById('sum-expense').textContent = fmt(exp);
+  document.getElementById('sum-debt').textContent    = fmt(dbt);
+  document.getElementById('sum-invest').textContent  = fmt(inv);
+  const balEl = document.getElementById('sum-balance');
+  balEl.textContent  = fmt(balance);
+  balEl.style.color  = balance >= 0 ? 'var(--income)' : 'var(--expense)';
+
+  document.getElementById('income-total').textContent  = fmt(inc);
+  document.getElementById('expense-total').textContent = fmt(exp);
+  document.getElementById('debt-total').textContent    = fmt(dbt);
+  document.getElementById('invest-total').textContent  = fmt(inv);
+  document.getElementById('donutTotal').textContent    =
+    new Intl.NumberFormat('ru-RU',{maximumFractionDigits:0}).format(exp||0);
+
+  document.getElementById('savingsRate').textContent  = pct(inv,inc) + '%';
+  document.getElementById('debtRatio').textContent    = pct(dbt,inc) + '%';
+  document.getElementById('expenseRatio').textContent = pct(exp,inc) + '%';
+  const freeEl = document.getElementById('freeBalance');
+  freeEl.textContent  = fmt(balance);
+  freeEl.style.color  = balance >= 0 ? 'var(--invest)' : 'var(--expense)';
+}
+
+// Полный refresh (с диаграммами)
+function refresh() {
+  refreshCalc();
+  drawDonut('donutChart',  state.expense.map(r=>r.amount||0), COLORS.expense, 30);
+  drawDonut('incomeDonut', state.income.map(r=>r.amount||0),  COLORS.income, 18);
+  buildLegend('expLegend',     state.expense, COLORS.expense);
+  buildLegend('incomeLegend',  state.income,  COLORS.income);
+  buildProgress();
+  drawBars();
+}
+
+// ────────────────────────────────────────────────
+// PERIOD CONTROLS
+// ────────────────────────────────────────────────
+document.getElementById('selMonth').addEventListener('change', function() {
+  state.month = parseInt(this.value);
+  scheduleSave();
+});
+document.getElementById('selYear').addEventListener('change', function() {
+  state.year = parseInt(this.value);
+  scheduleSave();
+});
+document.getElementById('selCurrency').addEventListener('change', function() {
+  state.currency = this.value.split(' ')[0];
+  refresh();
+  scheduleSave();
+});
+
+// ────────────────────────────────────────────────
+// TOAST
+// ────────────────────────────────────────────────
+function showToast(msg, ok=true) {
+  const el = document.getElementById('toast');
+  el.textContent = msg;
+  el.className = 'toast show' + (ok ? ' ok' : '');
+  setTimeout(() => el.classList.remove('show'), 2500);
+}
+
+// ────────────────────────────────────────────────
+// EXPORT / IMPORT
+// ────────────────────────────────────────────────
+function openExport() {
+  document.getElementById('exportArea').value = JSON.stringify(state, null, 2);
+  document.getElementById('exportModal').classList.add('open');
+}
+function copyExport() {
+  const ta = document.getElementById('exportArea');
+  ta.select();
+  navigator.clipboard.writeText(ta.value).then(() => showToast('✓ Скопировано в буфер'));
+}
+function downloadExport() {
+  const blob = new Blob([document.getElementById('exportArea').value], {type:'application/json'});
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = `finance_${state.year}_${String(state.month+1).padStart(2,'0')}.json`;
+  a.click();
+  showToast('✓ Файл скачан');
+}
+
+function openImport() {
+  document.getElementById('importArea').value = '';
+  document.getElementById('importModal').classList.add('open');
+}
+function doImport() {
+  try {
+    const parsed = JSON.parse(document.getElementById('importArea').value);
+    // Validate minimal structure
+    if (!parsed.income || !parsed.expense) throw new Error('Некорректный формат');
+    state = Object.assign({}, DEFAULT_DATA, parsed);
+    saveState();
+    applyStateToUI();
+    closeModal('importModal');
+    showToast('✓ Данные импортированы');
+  } catch(e) {
+    showToast('⚠ Ошибка: ' + e.message, false);
+  }
+}
+
+function closeModal(id) {
+  document.getElementById(id).classList.remove('open');
+}
+// close on backdrop click
+document.querySelectorAll('.modal-backdrop').forEach(el => {
+  el.addEventListener('click', e => { if(e.target===el) el.classList.remove('open'); });
+});
+
+// ────────────────────────────────────────────────
+// RESET
+// ────────────────────────────────────────────────
+function confirmReset() {
+  if (confirm('Сбросить все данные к демо-значениям? Это нельзя отменить.')) {
+    state = JSON.parse(JSON.stringify(DEFAULT_DATA));
+    saveState();
+    applyStateToUI();
+    showToast('✓ Данные сброшены');
+  }
+}
+
+// ────────────────────────────────────────────────
+// APPLY STATE → UI (full re-render)
+// ────────────────────────────────────────────────
+function applyStateToUI() {
+  document.getElementById('selMonth').value    = state.month;
+  document.getElementById('selYear').value     = state.year;
+  document.getElementById('selCurrency').value =
+    ['₽','$','€'].includes(state.currency) ? state.currency + ' ' + ({
+      '₽':'Рубль','$':'Доллар','€':'Евро'
+    }[state.currency]) : '₽ Рубль';
+
+  ['income','expense','debt','invest'].forEach(k => renderTable(k));
+  refresh();
+}
+
+// ────────────────────────────────────────────────
+// INIT
+// ────────────────────────────────────────────────
+applyStateToUI();
+// Show saved on load if data exists
+showSaved();
+</script>
+</body>
+</html>
