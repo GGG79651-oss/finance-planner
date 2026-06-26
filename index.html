@@ -6,45 +6,34 @@
 <title>Финансовый Планёр</title>
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap');
-
-:root {
-  --bg:      #09090f;
-  --s1:      #111119;
-  --s2:      #18181f;
-  --s3:      #1e1e2a;
-  --border:  #252535;
-  --border2: #2e2e45;
-  --text:    #eaeaf2;
-  --text2:   #7878a0;
-  --text3:   #44445a;
-  --income:  #00e5a0;
-  --expense: #ff4d6d;
-  --debt:    #ffd166;
-  --invest:  #7c6af7;
-  --radius:  14px;
-  --safe-b:  env(safe-area-inset-bottom, 0px);
+:root{
+  --bg:#09090f;--s1:#111119;--s2:#18181f;--s3:#1e1e2a;
+  --border:#252535;--border2:#2e2e45;
+  --text:#eaeaf2;--text2:#7878a0;--text3:#44445a;
+  --income:#00e5a0;--expense:#ff4d6d;--debt:#ffd166;--invest:#7c6af7;
+  --radius:14px;--safe-b:env(safe-area-inset-bottom,0px);
 }
 *,*::before,*::after{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 html{scroll-behavior:smooth}
 body{background:var(--bg);color:var(--text);font-family:'Inter',-apple-system,sans-serif;font-size:14px;min-height:100vh;overflow-x:hidden}
 
-/* ── TAB BAR ── */
+/* TAB BAR */
 .tab-bar{position:fixed;bottom:0;left:0;right:0;background:rgba(17,17,25,0.96);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border-top:1px solid var(--border);display:flex;padding-bottom:var(--safe-b);z-index:50}
 .tab-btn{flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;padding:10px 0 8px;background:none;border:none;color:var(--text2);font-family:inherit;font-size:10px;font-weight:500;cursor:pointer;transition:color .2s}
 .tab-btn.active{color:var(--income)}
 .tab-icon{font-size:20px;line-height:1}
 
-/* ── PAGES ── */
-.page{display:none;min-height:100vh;padding-bottom:80px}
+/* PAGES */
+.page{display:none;min-height:100vh;padding-bottom:90px}
 .page.active{display:block}
 
-/* ── PAGE HEADER ── */
+/* PAGE HEADER */
 .page-header{padding:16px 16px 12px;position:sticky;top:0;background:rgba(9,9,15,0.94);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);z-index:10;border-bottom:1px solid var(--border)}
 .page-title{font-size:22px;font-weight:800;letter-spacing:-.5px}
 .page-title span{color:var(--income)}
 .page-subtitle{font-size:12px;color:var(--text2);margin-top:2px}
 
-/* ── SYNC BAR ── */
+/* SYNC BAR */
 .sync-bar{display:flex;align-items:center;justify-content:space-between;padding:8px 16px;background:var(--s2);border-bottom:1px solid var(--border);font-size:11px;color:var(--text2)}
 .sync-indicator{display:flex;align-items:center;gap:6px}
 .sync-dot{width:7px;height:7px;border-radius:50%;background:var(--text3);transition:background .4s;flex-shrink:0}
@@ -54,67 +43,30 @@ body{background:var(--bg);color:var(--text);font-family:'Inter',-apple-system,sa
 @keyframes pulse{0%,100%{opacity:1}50%{opacity:.3}}
 .sync-btn-sm{background:none;border:none;color:var(--text2);font-size:11px;font-family:inherit;cursor:pointer;padding:2px 0}
 
-/* ── CONTENT ── */
+/* CONTENT */
 .content{padding:16px}
 
-/* ── KPI ── */
+/* KPI */
 .kpi-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:16px}
 .kpi-card{background:var(--s1);border:1px solid var(--border);border-radius:var(--radius);padding:14px;position:relative;overflow:hidden}
 .kpi-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;border-radius:var(--radius) var(--radius) 0 0}
-.kpi-card.income::before{background:var(--income)}
-.kpi-card.expense::before{background:var(--expense)}
-.kpi-card.debt::before{background:var(--debt)}
-.kpi-card.invest::before{background:var(--invest)}
+.kpi-card.income::before{background:var(--income)}.kpi-card.expense::before{background:var(--expense)}
+.kpi-card.debt::before{background:var(--debt)}.kpi-card.invest::before{background:var(--invest)}
 .kpi-label{font-size:10px;font-weight:700;letter-spacing:1px;text-transform:uppercase;margin-bottom:8px}
-.kpi-card.income .kpi-label{color:var(--income)}
-.kpi-card.expense .kpi-label{color:var(--expense)}
-.kpi-card.debt .kpi-label{color:var(--debt)}
-.kpi-card.invest .kpi-label{color:var(--invest)}
+.kpi-card.income .kpi-label{color:var(--income)}.kpi-card.expense .kpi-label{color:var(--expense)}
+.kpi-card.debt .kpi-label{color:var(--debt)}.kpi-card.invest .kpi-label{color:var(--invest)}
 .kpi-value{font-family:'JetBrains Mono',monospace;font-size:19px;font-weight:700;line-height:1.1;word-break:break-all}
-.kpi-card.income .kpi-value{color:var(--income)}
-.kpi-card.expense .kpi-value{color:var(--expense)}
-.kpi-card.debt .kpi-value{color:var(--debt)}
-.kpi-card.invest .kpi-value{color:var(--invest)}
+.kpi-card.income .kpi-value{color:var(--income)}.kpi-card.expense .kpi-value{color:var(--expense)}
+.kpi-card.debt .kpi-value{color:var(--debt)}.kpi-card.invest .kpi-value{color:var(--invest)}
 .kpi-sub{margin-top:4px;font-size:10px;color:var(--text2)}
 
-/* ── BALANCE ── */
+/* BALANCE */
 .balance-card{background:linear-gradient(135deg,var(--s2),var(--s3));border:1px solid var(--border2);border-radius:var(--radius);padding:18px;margin-bottom:16px;display:flex;align-items:center;justify-content:space-between}
 .balance-label{font-size:12px;color:var(--text2);margin-bottom:4px}
 .balance-value{font-family:'JetBrains Mono',monospace;font-size:28px;font-weight:800;letter-spacing:-1px}
 .balance-icon{font-size:36px;opacity:.3}
 
-/* ── PANELS (data page) ── */
-.panel{background:var(--s1);border:1px solid var(--border);border-radius:var(--radius);margin-bottom:12px;overflow:hidden}
-.panel.income{border-color:rgba(0,229,160,.2)}
-.panel.expense{border-color:rgba(255,77,109,.2)}
-.panel.debt{border-color:rgba(255,209,102,.2)}
-.panel.invest{border-color:rgba(124,106,247,.2)}
-.panel-head{display:flex;align-items:center;justify-content:space-between;padding:14px 16px 10px;border-bottom:1px solid var(--border)}
-.panel-head-title{font-size:11px;font-weight:700;letter-spacing:1.2px;text-transform:uppercase}
-.panel.income .panel-head-title{color:var(--income)}
-.panel.expense .panel-head-title{color:var(--expense)}
-.panel.debt .panel-head-title{color:var(--debt)}
-.panel.invest .panel-head-title{color:var(--invest)}
-.panel-total{font-family:'JetBrains Mono',monospace;font-size:13px;font-weight:700}
-.panel.income .panel-total{color:var(--income)}
-.panel.expense .panel-total{color:var(--expense)}
-.panel.debt .panel-total{color:var(--debt)}
-.panel.invest .panel-total{color:var(--invest)}
-
-/* ── ROW ITEMS ── */
-.row-item{display:flex;align-items:center;padding:11px 16px;border-bottom:1px solid rgba(255,255,255,.03);gap:10px}
-.row-item:last-child{border-bottom:none}
-.row-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
-.row-name{flex:1;background:none;border:none;color:var(--text);font-family:inherit;font-size:13px;outline:none;min-width:0}
-.row-name::placeholder{color:var(--text3)}
-.row-amount{background:none;border:none;font-family:'JetBrains Mono',monospace;font-size:13px;font-weight:600;text-align:right;outline:none;width:90px;flex-shrink:0}
-.row-amount::placeholder{color:var(--text3)}
-.row-del{background:none;border:none;color:var(--text3);font-size:18px;cursor:pointer;padding:0 0 0 4px;flex-shrink:0;line-height:1;transition:color .15s}
-.row-del:active{color:var(--expense)}
-.add-btn{display:flex;align-items:center;justify-content:center;gap:6px;width:100%;padding:12px;background:none;border:none;border-top:1px dashed var(--border2);color:var(--text2);font-family:inherit;font-size:12px;cursor:pointer;transition:color .2s}
-.add-btn:active{color:var(--text)}
-
-/* ── CHART PANELS ── */
+/* CHART PANEL */
 .chart-panel{background:var(--s1);border:1px solid var(--border);border-radius:var(--radius);padding:16px;margin-bottom:12px}
 .chart-panel-title{font-size:11px;font-weight:700;letter-spacing:1.2px;text-transform:uppercase;color:var(--text2);margin-bottom:14px}
 .donut-wrap{display:flex;align-items:center;gap:16px}
@@ -128,28 +80,93 @@ body{background:var(--bg);color:var(--text);font-family:'Inter',-apple-system,sa
 .legend-name{flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .legend-val{font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--text);flex-shrink:0}
 
-/* ── BARS ── */
+/* BARS */
 .bars-wrap{display:flex;align-items:flex-end;gap:10px;height:110px;padding-top:10px}
 .bar-col{flex:1;display:flex;flex-direction:column;align-items:center;gap:5px}
-.bar-body{width:100%;border-radius:4px 4px 0 0;min-height:3px;transition:height .4s}
+.bar-body{width:100%;border-radius:4px 4px 0 0;min-height:3px}
 .bar-label{font-size:9px;color:var(--text2)}
 .bar-amount{font-family:'JetBrains Mono',monospace;font-size:9px;color:var(--text)}
 
-/* ── PROGRESS ── */
+/* PROGRESS */
 .progress-row{display:flex;align-items:center;gap:10px;margin-bottom:10px}
 .progress-label{font-size:12px;color:var(--text2);width:80px;flex-shrink:0}
 .progress-track{flex:1;height:5px;background:var(--border2);border-radius:3px;overflow:hidden}
 .progress-fill{height:100%;border-radius:3px;transition:width .5s ease}
 .progress-pct{font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--text);width:32px;text-align:right;flex-shrink:0}
 
-/* ── INSIGHTS ── */
+/* INSIGHTS */
 .insight-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
 .insight{background:var(--s2);border-radius:10px;padding:12px}
 .insight-lbl{font-size:10px;color:var(--text2)}
 .insight-val{font-family:'JetBrains Mono',monospace;font-size:22px;font-weight:700;margin:6px 0 2px;line-height:1}
 .insight-desc{font-size:10px;color:var(--text2)}
 
-/* ── SETTINGS ── */
+/* MONTH SELECTOR */
+.month-nav{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;background:var(--s1);border:1px solid var(--border);border-radius:var(--radius);padding:12px 16px}
+.month-nav-btn{background:none;border:none;color:var(--text2);font-size:20px;cursor:pointer;padding:0 8px;line-height:1}
+.month-nav-btn:active{color:var(--text)}
+.month-nav-label{font-size:15px;font-weight:700;text-align:center}
+
+/* HISTORY */
+.history-day{margin-bottom:12px}
+.history-day-header{display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid var(--border);margin-bottom:6px}
+.history-day-label{font-size:12px;font-weight:700;color:var(--text2)}
+.history-day-total{font-family:'JetBrains Mono',monospace;font-size:11px}
+.history-entry{display:flex;align-items:center;gap:10px;padding:9px 0;border-bottom:1px solid rgba(255,255,255,.03)}
+.history-entry:last-child{border-bottom:none}
+.history-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
+.history-name{flex:1;font-size:13px}
+.history-amount{font-family:'JetBrains Mono',monospace;font-size:12px;font-weight:600}
+.history-time{font-size:10px;color:var(--text2);margin-left:8px}
+.history-del{background:none;border:none;color:var(--text3);font-size:16px;cursor:pointer;padding:0 0 0 6px;line-height:1}
+.history-del:active{color:var(--expense)}
+.empty-state{text-align:center;padding:40px 20px;color:var(--text2)}
+.empty-icon{font-size:40px;margin-bottom:12px}
+.empty-text{font-size:13px}
+
+/* QUICK ADD FAB */
+.fab{position:fixed;bottom:calc(80px + var(--safe-b) + 16px);right:16px;width:56px;height:56px;border-radius:50%;background:var(--income);color:#000;border:none;font-size:28px;cursor:pointer;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 20px rgba(0,229,160,.4);z-index:40;transition:transform .2s}
+.fab:active{transform:scale(.92)}
+
+/* GOALS */
+.goal-card{background:var(--s1);border:1px solid var(--border);border-radius:var(--radius);padding:16px;margin-bottom:12px;position:relative}
+.goal-name{font-size:15px;font-weight:700;margin-bottom:4px}
+.goal-meta{font-size:11px;color:var(--text2);margin-bottom:12px}
+.goal-amounts{display:flex;justify-content:space-between;align-items:flex-end;margin-bottom:8px}
+.goal-saved{font-family:'JetBrains Mono',monospace;font-size:18px;font-weight:700;color:var(--income)}
+.goal-target{font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--text2)}
+.goal-track{height:8px;background:var(--border2);border-radius:4px;overflow:hidden;margin-bottom:8px}
+.goal-fill{height:100%;border-radius:4px;background:linear-gradient(90deg,var(--invest),var(--income));transition:width .6s ease}
+.goal-pct{font-size:11px;color:var(--text2)}
+.goal-actions{display:flex;gap:8px;margin-top:12px}
+.goal-btn{flex:1;padding:8px;background:var(--s2);border:1px solid var(--border2);color:var(--text2);border-radius:8px;font-family:inherit;font-size:11px;cursor:pointer;transition:all .15s}
+.goal-btn:active{background:var(--border2);color:var(--text)}
+.goal-btn.primary{background:rgba(124,106,247,.15);border-color:rgba(124,106,247,.4);color:var(--invest)}
+
+/* PANELS (budget) */
+.panel{background:var(--s1);border:1px solid var(--border);border-radius:var(--radius);margin-bottom:12px;overflow:hidden}
+.panel.income{border-color:rgba(0,229,160,.2)}.panel.expense{border-color:rgba(255,77,109,.2)}
+.panel.debt{border-color:rgba(255,209,102,.2)}.panel.invest{border-color:rgba(124,106,247,.2)}
+.panel-head{display:flex;align-items:center;justify-content:space-between;padding:14px 16px 10px;border-bottom:1px solid var(--border)}
+.panel-head-title{font-size:11px;font-weight:700;letter-spacing:1.2px;text-transform:uppercase}
+.panel.income .panel-head-title{color:var(--income)}.panel.expense .panel-head-title{color:var(--expense)}
+.panel.debt .panel-head-title{color:var(--debt)}.panel.invest .panel-head-title{color:var(--invest)}
+.panel-total{font-family:'JetBrains Mono',monospace;font-size:13px;font-weight:700}
+.panel.income .panel-total{color:var(--income)}.panel.expense .panel-total{color:var(--expense)}
+.panel.debt .panel-total{color:var(--debt)}.panel.invest .panel-total{color:var(--invest)}
+.row-item{display:flex;align-items:center;padding:11px 16px;border-bottom:1px solid rgba(255,255,255,.03);gap:10px}
+.row-item:last-child{border-bottom:none}
+.row-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
+.row-name{flex:1;background:none;border:none;color:var(--text);font-family:inherit;font-size:13px;outline:none;min-width:0}
+.row-name::placeholder{color:var(--text3)}
+.row-amount{background:none;border:none;font-family:'JetBrains Mono',monospace;font-size:13px;font-weight:600;text-align:right;outline:none;width:90px;flex-shrink:0}
+.row-amount::placeholder{color:var(--text3)}
+.row-del{background:none;border:none;color:var(--text3);font-size:18px;cursor:pointer;padding:0 0 0 4px;flex-shrink:0;line-height:1}
+.row-del:active{color:var(--expense)}
+.add-btn{display:flex;align-items:center;justify-content:center;gap:6px;width:100%;padding:12px;background:none;border:none;border-top:1px dashed var(--border2);color:var(--text2);font-family:inherit;font-size:12px;cursor:pointer}
+.add-btn:active{color:var(--text)}
+
+/* SETTINGS */
 .settings-section{margin-bottom:24px}
 .settings-title{font-size:11px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--text2);margin-bottom:10px;padding-bottom:8px;border-bottom:1px solid var(--border);opacity:.7}
 .settings-row{display:flex;align-items:center;justify-content:space-between;padding:12px 0;border-bottom:1px solid rgba(255,255,255,.04)}
@@ -158,75 +175,69 @@ body{background:var(--bg);color:var(--text);font-family:'Inter',-apple-system,sa
 .settings-desc{font-size:11px;color:var(--text2);margin-top:2px}
 .settings-control{background:var(--s2);border:1px solid var(--border2);color:var(--text);border-radius:8px;padding:7px 10px;font-size:13px;font-family:inherit;outline:none}
 .settings-control:focus{border-color:var(--invest)}
-
-/* ── CLOUD CARD ── */
-.cloud-card{background:var(--s2);border:1px solid var(--border2);border-radius:var(--radius);padding:16px;margin-bottom:16px}
-.cloud-card-title{font-size:15px;font-weight:700;margin-bottom:8px}
-.cloud-card-desc{font-size:12px;color:var(--text2);line-height:1.6;margin-bottom:16px}
-.steps{display:flex;flex-direction:column;gap:12px;margin-bottom:16px}
-.step{display:flex;gap:10px;align-items:flex-start}
-.step-num{width:22px;height:22px;border-radius:50%;background:var(--invest);color:#fff;font-size:11px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px}
-.step-text{font-size:12px;color:var(--text2);line-height:1.5}
-.step-text a{color:var(--income);text-decoration:none}
-.step-text code{font-family:'JetBrains Mono',monospace;background:var(--s3);padding:1px 5px;border-radius:4px;font-size:11px;color:var(--debt)}
 .field-label{font-size:12px;color:var(--text2);margin-bottom:6px}
 .field-input{width:100%;background:var(--s3);border:1px solid var(--border2);color:var(--text);border-radius:10px;padding:11px 14px;font-size:13px;font-family:'JetBrains Mono',monospace;outline:none;margin-bottom:12px;transition:border-color .2s}
 .field-input:focus{border-color:var(--invest)}
 .field-input::placeholder{color:var(--text3)}
 
-/* ── BUTTONS ── */
+/* BUTTONS */
 .action-btn{display:flex;align-items:center;justify-content:center;gap:7px;width:100%;padding:13px;background:var(--s3);border:1px solid var(--border2);color:var(--text);font-family:inherit;font-size:13px;font-weight:500;border-radius:10px;cursor:pointer;transition:all .2s;margin-bottom:8px}
 .action-btn:active{background:var(--border2)}
 .action-btn.primary{background:var(--income);color:#000;border-color:var(--income);font-weight:700}
 .action-btn.primary:active{opacity:.85}
 .action-btn.danger{color:var(--expense);border-color:rgba(255,77,109,.25)}
-.action-btn.danger:active{background:rgba(255,77,109,.1)}
-.action-btn:disabled{opacity:.4;cursor:not-allowed}
+.action-btn.sm{padding:9px 14px;font-size:12px;width:auto;margin-bottom:0}
 
-/* ── MODAL ── */
+/* MODAL */
 .modal-backdrop{display:none;position:fixed;inset:0;background:rgba(0,0,0,.75);z-index:100;align-items:flex-end;justify-content:center}
 .modal-backdrop.open{display:flex}
-.modal{background:var(--s1);border-radius:20px 20px 0 0;border-top:1px solid var(--border2);padding:20px 20px calc(20px + var(--safe-b));width:100%;max-height:85vh;overflow-y:auto}
+.modal{background:var(--s1);border-radius:20px 20px 0 0;border-top:1px solid var(--border2);padding:20px 20px calc(20px + var(--safe-b));width:100%;max-height:90vh;overflow-y:auto}
 .modal-handle{width:36px;height:4px;background:var(--border2);border-radius:2px;margin:0 auto 16px}
-.modal h3{font-size:16px;margin-bottom:12px}
-.modal p{font-size:12px;color:var(--text2);line-height:1.5;margin-bottom:12px}
-.modal textarea{width:100%;height:150px;background:var(--bg);border:1px solid var(--border2);color:var(--text);border-radius:10px;padding:10px 12px;font-family:'JetBrains Mono',monospace;font-size:11px;resize:none;outline:none;margin-bottom:12px}
+.modal h3{font-size:16px;margin-bottom:16px}
+.modal-field{margin-bottom:14px}
+.modal-field label{display:block;font-size:12px;color:var(--text2);margin-bottom:6px}
+.modal-input{width:100%;background:var(--s2);border:1px solid var(--border2);color:var(--text);border-radius:10px;padding:12px 14px;font-size:15px;font-family:inherit;outline:none;transition:border-color .2s}
+.modal-input:focus{border-color:var(--invest)}
+.modal-input.big{font-size:24px;font-family:'JetBrains Mono',monospace;font-weight:700;text-align:center}
+.cat-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:14px}
+.cat-btn{padding:10px;background:var(--s2);border:1px solid var(--border2);color:var(--text2);border-radius:10px;font-family:inherit;font-size:12px;cursor:pointer;text-align:center;transition:all .2s}
+.cat-btn.selected{border-color:var(--expense);color:var(--expense);background:rgba(255,77,109,.1)}
+.cat-btn.income-cat.selected{border-color:var(--income);color:var(--income);background:rgba(0,229,160,.1)}
 .modal-actions{display:flex;flex-direction:column;gap:8px}
+.modal textarea{width:100%;height:130px;background:var(--bg);border:1px solid var(--border2);color:var(--text);border-radius:10px;padding:10px 12px;font-family:'JetBrains Mono',monospace;font-size:11px;resize:none;outline:none;margin-bottom:12px}
 
-/* ── TOAST ── */
-.toast{position:fixed;bottom:calc(72px + var(--safe-b));left:16px;right:16px;background:var(--s2);border:1px solid var(--border2);color:var(--text);padding:12px 16px;border-radius:12px;font-size:13px;z-index:200;text-align:center;transform:translateY(20px);opacity:0;transition:all .25s;pointer-events:none}
-.toast.show{transform:translateY(0);opacity:1}
-.toast.ok{border-color:var(--income);color:var(--income);background:rgba(0,229,160,.08)}
-.toast.err{border-color:var(--expense);color:var(--expense);background:rgba(255,77,109,.08)}
-
-/* ── ALERT BOX ── */
+/* ALERT */
 .alert{border-radius:10px;padding:12px 14px;font-size:12px;line-height:1.5;margin-bottom:12px}
 .alert.info{background:rgba(124,106,247,.1);border:1px solid rgba(124,106,247,.3);color:#c4b5fd}
 .alert.success{background:rgba(0,229,160,.08);border:1px solid rgba(0,229,160,.3);color:var(--income)}
 .alert.warn{background:rgba(255,209,102,.08);border:1px solid rgba(255,209,102,.3);color:var(--debt)}
 
+/* TOAST */
+.toast{position:fixed;bottom:calc(72px + var(--safe-b));left:16px;right:16px;background:var(--s2);border:1px solid var(--border2);color:var(--text);padding:12px 16px;border-radius:12px;font-size:13px;z-index:200;text-align:center;transform:translateY(20px);opacity:0;transition:all .25s;pointer-events:none}
+.toast.show{transform:translateY(0);opacity:1}
+.toast.ok{border-color:var(--income);color:var(--income);background:rgba(0,229,160,.08)}
+.toast.err{border-color:var(--expense);color:var(--expense);background:rgba(255,77,109,.08)}
+
 @media(min-width:768px){
-  .tab-bar{max-width:500px;left:50%;transform:translateX(-50%);border-radius:16px 16px 0 0}
-  .page{max-width:500px;margin:0 auto}
-  .toast{max-width:460px;left:50%;transform:translateX(-50%) translateY(20px)}
+  .tab-bar,.page,.toast{max-width:500px}
+  .tab-bar,.toast{left:50%;transform:translateX(-50%)}
+  .page{margin:0 auto}
   .toast.show{transform:translateX(-50%) translateY(0)}
+  .fab{right:calc(50% - 250px + 16px)}
 }
 select option{background:#1a1a26}
 </style>
 </head>
 <body>
 
-<!-- ═══════════════ PAGE: ОБЗОР ═══════════════ -->
+<!-- ═══ PAGE: ОБЗОР ═══ -->
 <div class="page active" id="page-overview">
   <div class="page-header">
     <div class="page-title">Финансовый<span>.</span>Планёр</div>
     <div class="page-subtitle" id="headerPeriod">Загрузка...</div>
   </div>
   <div class="sync-bar">
-    <div class="sync-indicator">
-      <div class="sync-dot" id="syncDot"></div>
-      <span id="syncText">Локально</span>
-    </div>
+    <div class="sync-indicator"><div class="sync-dot" id="syncDot"></div><span id="syncText">Локально</span></div>
     <button class="sync-btn-sm" onclick="manualSync()">↻ Синхронизировать</button>
   </div>
   <div class="content">
@@ -247,10 +258,7 @@ select option{background:#1a1a26}
     <div class="chart-panel">
       <div class="chart-panel-title">Структура расходов</div>
       <div class="donut-wrap">
-        <div class="donut-container">
-          <canvas id="donutExpense" width="150" height="150"></canvas>
-          <div class="donut-center-text"><div class="dc-val" id="donutExpVal">0</div><div class="dc-lbl">расходы</div></div>
-        </div>
+        <div class="donut-container"><canvas id="donutExpense" width="150" height="150"></canvas><div class="donut-center-text"><div class="dc-val" id="donutExpVal">0</div><div class="dc-lbl">расходы</div></div></div>
         <div class="legend" id="legendExpense"></div>
       </div>
     </div>
@@ -261,13 +269,6 @@ select option{background:#1a1a26}
     <div class="chart-panel">
       <div class="chart-panel-title">Структура бюджета</div>
       <div id="progressWrap"></div>
-      <div style="margin-top:14px;padding-top:14px;border-top:1px solid var(--border)">
-        <div class="chart-panel-title" style="margin-bottom:12px">Структура доходов</div>
-        <div class="donut-wrap">
-          <div class="donut-container"><canvas id="donutIncome" width="110" height="110"></canvas></div>
-          <div class="legend" id="legendIncome"></div>
-        </div>
-      </div>
     </div>
     <div class="chart-panel">
       <div class="chart-panel-title">Аналитика</div>
@@ -281,18 +282,52 @@ select option{background:#1a1a26}
   </div>
 </div>
 
-<!-- ═══════════════ PAGE: ДАННЫЕ ═══════════════ -->
-<div class="page" id="page-data">
+<!-- ═══ PAGE: ИСТОРИЯ ═══ -->
+<div class="page" id="page-history">
   <div class="page-header">
-    <div class="page-title">Данные</div>
-    <div class="page-subtitle">Редактируйте статьи бюджета</div>
+    <div class="page-title">История</div>
+    <div class="page-subtitle">Записи по дням</div>
   </div>
   <div class="sync-bar">
-    <div class="sync-indicator">
-      <div class="sync-dot" id="syncDot2"></div>
-      <span id="syncText2">Локально</span>
+    <div class="sync-indicator"><div class="sync-dot" id="syncDot2"></div><span id="syncText2">Локально</span></div>
+    <button class="sync-btn-sm" onclick="manualSync()">↻ Синхронизировать</button>
+  </div>
+  <div class="content">
+    <div class="month-nav">
+      <button class="month-nav-btn" onclick="historyPrevMonth()">‹</button>
+      <div class="month-nav-label" id="historyMonthLabel">Июнь 2025</div>
+      <button class="month-nav-btn" onclick="historyNextMonth()">›</button>
     </div>
-    <button class="sync-btn-sm" onclick="manualSync()">↑ Сохранить в облако</button>
+    <!-- monthly summary strip -->
+    <div class="kpi-grid" style="margin-bottom:16px">
+      <div class="kpi-card income" style="padding:10px 12px"><div class="kpi-label">Доходы</div><div class="kpi-value" id="h-income" style="font-size:16px">0 ₽</div></div>
+      <div class="kpi-card expense" style="padding:10px 12px"><div class="kpi-label">Расходы</div><div class="kpi-value" id="h-expense" style="font-size:16px">0 ₽</div></div>
+    </div>
+    <div id="historyList"></div>
+  </div>
+</div>
+
+<!-- ═══ PAGE: ЦЕЛИ ═══ -->
+<div class="page" id="page-goals">
+  <div class="page-header">
+    <div class="page-title">Цели</div>
+    <div class="page-subtitle">Накопления семьи</div>
+  </div>
+  <div class="content">
+    <div id="goalsList"></div>
+    <button class="action-btn primary" onclick="openAddGoal()">＋ Добавить цель</button>
+  </div>
+</div>
+
+<!-- ═══ PAGE: БЮДЖЕТ ═══ -->
+<div class="page" id="page-budget">
+  <div class="page-header">
+    <div class="page-title">Бюджет</div>
+    <div class="page-subtitle">Плановые статьи</div>
+  </div>
+  <div class="sync-bar">
+    <div class="sync-indicator"><div class="sync-dot" id="syncDot3"></div><span id="syncText3">Локально</span></div>
+    <button class="sync-btn-sm" onclick="manualSync()">↑ Сохранить</button>
   </div>
   <div class="content">
     <div class="panel income">
@@ -318,97 +353,62 @@ select option{background:#1a1a26}
   </div>
 </div>
 
-<!-- ═══════════════ PAGE: НАСТРОЙКИ ═══════════════ -->
+<!-- ═══ PAGE: НАСТРОЙКИ ═══ -->
 <div class="page" id="page-settings">
   <div class="page-header">
     <div class="page-title">Настройки</div>
-    <div class="page-subtitle">Период, валюта, синхронизация</div>
+    <div class="page-subtitle">Синхронизация и данные</div>
   </div>
   <div class="content">
-
-    <!-- PERIOD -->
     <div class="settings-section">
-      <div class="settings-title">Период</div>
-      <div class="settings-row">
-        <div><div class="settings-label">Месяц</div></div>
+      <div class="settings-title">Период по умолчанию</div>
+      <div class="settings-row"><div><div class="settings-label">Месяц</div></div>
         <select class="settings-control" id="selMonth">
           <option value="0">Январь</option><option value="1">Февраль</option><option value="2">Март</option>
           <option value="3">Апрель</option><option value="4">Май</option><option value="5">Июнь</option>
           <option value="6">Июль</option><option value="7">Август</option><option value="8">Сентябрь</option>
           <option value="9">Октябрь</option><option value="10">Ноябрь</option><option value="11">Декабрь</option>
-        </select>
-      </div>
-      <div class="settings-row">
-        <div><div class="settings-label">Год</div></div>
-        <input type="number" class="settings-control" id="selYear" min="2020" max="2035" style="width:90px">
-      </div>
-      <div class="settings-row">
-        <div><div class="settings-label">Валюта</div></div>
+        </select></div>
+      <div class="settings-row"><div><div class="settings-label">Год</div></div>
+        <input type="number" class="settings-control" id="selYear" min="2020" max="2035" style="width:90px"></div>
+      <div class="settings-row"><div><div class="settings-label">Валюта</div></div>
         <select class="settings-control" id="selCurrency">
-          <option value="₽">₽ Рубль</option>
-          <option value="$">$ Доллар</option>
-          <option value="€">€ Евро</option>
-        </select>
-      </div>
+          <option value="₽">₽ Рубль</option><option value="$">$ Доллар</option><option value="€">€ Евро</option>
+        </select></div>
     </div>
 
-    <!-- CLOUD SYNC -->
     <div class="settings-section">
-      <div class="settings-title">☁️ Синхронизация</div>
-
-      <div class="cloud-card">
-        <div class="cloud-card-title">Firebase — бесплатная облачная база</div>
-        <div class="cloud-card-desc">
-          Все устройства — ваш телефон, телефон жены и компьютер — видят одни данные в реальном времени. Настройка занимает 3 минуты.
-        </div>
-
-        <div class="steps">
-          <div class="step">
-            <div class="step-num">1</div>
-            <div class="step-text">Зайдите на <a href="https://console.firebase.google.com" target="_blank">console.firebase.google.com</a> → войдите через Google → нажмите <code>Создать проект</code></div>
-          </div>
-          <div class="step">
-            <div class="step-num">2</div>
-            <div class="step-text">Введите любое название проекта (например <code>finance-planner</code>), аналитику можно отключить → создайте проект</div>
-          </div>
-          <div class="step">
-            <div class="step-num">3</div>
-            <div class="step-text">В меню слева: <code>Сборка</code> → <code>Realtime Database</code> → <code>Создать базу данных</code> → выберите <code>Начать в тестовом режиме</code></div>
-          </div>
-          <div class="step">
-            <div class="step-num">4</div>
-            <div class="step-text">Скопируйте URL базы данных — он выглядит как <code>https://finance-planner-abc-default-rtdb.firebaseio.com</code></div>
-          </div>
-          <div class="step">
-            <div class="step-num">5</div>
-            <div class="step-text">Вставьте URL в поле ниже и нажмите «Подключить». На других устройствах введите тот же URL.</div>
-          </div>
-        </div>
-
-        <div class="alert info">
-          💡 Тестовый режим Firebase работает бесплатно 30 дней. После этого нужно настроить правила доступа — напишите мне, помогу.
-        </div>
-      </div>
-
-      <div class="field-label">Firebase Database URL</div>
-      <input type="text" class="field-input" id="fbUrlInput"
-        placeholder="https://your-project-default-rtdb.firebaseio.com"
-        autocomplete="off" spellcheck="false">
-
+      <div class="settings-title">☁️ Firebase синхронизация</div>
+      <div class="field-label">Database URL</div>
+      <input type="text" class="field-input" id="fbUrlInput" placeholder="https://your-project-default-rtdb.firebaseio.com" autocomplete="off" spellcheck="false">
       <div id="syncStatusBox" style="margin-bottom:12px"></div>
-
-      <button class="action-btn primary" id="connectBtn" onclick="connectFirebase()">☁️ Подключить Firebase</button>
+      <button class="action-btn primary" onclick="connectFirebase()">☁️ Подключить</button>
       <button class="action-btn" onclick="manualSync()">↑ Синхронизировать сейчас</button>
       <button class="action-btn" onclick="loadFromCloud()">↓ Загрузить с облака</button>
       <button class="action-btn danger" onclick="disconnectCloud()">✕ Отключить синхронизацию</button>
     </div>
 
-    <!-- DATA -->
+    <div class="settings-section">
+      <div class="settings-title">📲 Back Tap (быстрый ввод)</div>
+      <div class="alert info" style="margin-bottom:12px">
+        <strong>Как настроить на iPhone:</strong><br>
+        1. Настройки → Универсальный доступ → Касание → Back Tap<br>
+        2. Выберите «Двойное касание»<br>
+        3. Выберите «Команды» → найдите «Быстрая трата»<br>
+        4. Создайте команду: Открыть URL → вставьте ссылку ниже
+      </div>
+      <div class="field-label">Ссылка для Back Tap (скопируйте в Команды):</div>
+      <div style="display:flex;gap:8px;margin-bottom:12px">
+        <input type="text" class="field-input" id="quickAddUrl" readonly style="margin-bottom:0;font-size:11px">
+        <button class="action-btn sm" onclick="copyQuickUrl()" style="width:auto;flex-shrink:0">Копировать</button>
+      </div>
+    </div>
+
     <div class="settings-section">
       <div class="settings-title">Данные</div>
       <button class="action-btn" onclick="openExport()">↑ Экспорт JSON</button>
       <button class="action-btn" onclick="openImport()">↓ Импорт JSON</button>
-      <button class="action-btn danger" onclick="confirmReset()">⚠ Сбросить к демо-данным</button>
+      <button class="action-btn danger" onclick="confirmReset()">⚠ Сбросить данные</button>
     </div>
   </div>
 </div>
@@ -416,30 +416,89 @@ select option{background:#1a1a26}
 <!-- TAB BAR -->
 <div class="tab-bar">
   <button class="tab-btn active" onclick="goPage('overview',this)"><div class="tab-icon">📊</div><span>Обзор</span></button>
-  <button class="tab-btn" onclick="goPage('data',this)"><div class="tab-icon">✏️</div><span>Данные</span></button>
+  <button class="tab-btn" onclick="goPage('history',this)"><div class="tab-icon">📅</div><span>История</span></button>
+  <button class="tab-btn" onclick="goPage('goals',this)"><div class="tab-icon">🎯</div><span>Цели</span></button>
+  <button class="tab-btn" onclick="goPage('budget',this)"><div class="tab-icon">✏️</div><span>Бюджет</span></button>
   <button class="tab-btn" onclick="goPage('settings',this)"><div class="tab-icon">⚙️</div><span>Настройки</span></button>
 </div>
 
-<!-- MODALS -->
-<div class="modal-backdrop" id="exportModal">
+<!-- FAB quick add -->
+<button class="fab" onclick="openQuickAdd()" title="Быстрый ввод">＋</button>
+
+<!-- MODAL: QUICK ADD -->
+<div class="modal-backdrop" id="quickAddModal">
   <div class="modal">
     <div class="modal-handle"></div>
-    <h3>↑ Экспорт</h3>
-    <p>Скопируйте или скачайте JSON для переноса данных.</p>
+    <h3>Быстрый ввод</h3>
+    <div class="modal-field">
+      <label>Сумма</label>
+      <input class="modal-input big" type="number" id="qa-amount" placeholder="0" min="0" inputmode="decimal">
+    </div>
+    <div class="modal-field">
+      <label>Название</label>
+      <input class="modal-input" type="text" id="qa-name" placeholder="Кафе, продукты, зарплата...">
+    </div>
+    <div class="modal-field">
+      <label>Тип</label>
+      <div class="cat-grid">
+        <button class="cat-btn selected" id="qa-expense-btn" onclick="qaSetType('expense')">🔴 Расход</button>
+        <button class="cat-btn income-cat" id="qa-income-btn" onclick="qaSetType('income')">💚 Доход</button>
+      </div>
+    </div>
+    <div class="modal-field">
+      <label>Дата</label>
+      <input class="modal-input" type="date" id="qa-date">
+    </div>
+    <div class="modal-actions">
+      <button class="action-btn primary" onclick="submitQuickAdd()">✓ Добавить запись</button>
+      <button class="action-btn" onclick="closeModal('quickAddModal')">Отмена</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL: ADD GOAL -->
+<div class="modal-backdrop" id="addGoalModal">
+  <div class="modal">
+    <div class="modal-handle"></div>
+    <h3 id="goalModalTitle">Новая цель</h3>
+    <div class="modal-field"><label>Название цели</label><input class="modal-input" type="text" id="goal-name" placeholder="Отпуск, машина, ремонт..."></div>
+    <div class="modal-field"><label>Целевая сумма</label><input class="modal-input big" type="number" id="goal-target" placeholder="0" inputmode="decimal"></div>
+    <div class="modal-field"><label>Уже накоплено</label><input class="modal-input" type="number" id="goal-saved" placeholder="0" inputmode="decimal"></div>
+    <div class="modal-field"><label>Иконка (эмодзи)</label><input class="modal-input" type="text" id="goal-icon" placeholder="🏖️" style="font-size:24px;text-align:center" maxlength="2"></div>
+    <div class="modal-actions">
+      <button class="action-btn primary" onclick="saveGoal()">✓ Сохранить</button>
+      <button class="action-btn" onclick="closeModal('addGoalModal')">Отмена</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL: ADD TO GOAL -->
+<div class="modal-backdrop" id="addToGoalModal">
+  <div class="modal">
+    <div class="modal-handle"></div>
+    <h3>Пополнить накопления</h3>
+    <div class="modal-field"><label>Добавить сумму</label><input class="modal-input big" type="number" id="atg-amount" placeholder="0" inputmode="decimal"></div>
+    <div class="modal-actions">
+      <button class="action-btn primary" onclick="submitAddToGoal()">✓ Добавить</button>
+      <button class="action-btn" onclick="closeModal('addToGoalModal')">Отмена</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL: EXPORT/IMPORT -->
+<div class="modal-backdrop" id="exportModal">
+  <div class="modal"><div class="modal-handle"></div><h3>Экспорт</h3>
     <textarea id="exportArea" readonly onclick="this.select()"></textarea>
     <div class="modal-actions">
       <button class="action-btn primary" onclick="copyExport()">Скопировать</button>
-      <button class="action-btn" onclick="downloadExport()">Скачать файл</button>
+      <button class="action-btn" onclick="downloadExport()">Скачать</button>
       <button class="action-btn" onclick="closeModal('exportModal')">Закрыть</button>
     </div>
   </div>
 </div>
 <div class="modal-backdrop" id="importModal">
-  <div class="modal">
-    <div class="modal-handle"></div>
-    <h3>↓ Импорт</h3>
-    <p>Вставьте JSON из экспорта.</p>
-    <textarea id="importArea" placeholder="Вставьте JSON сюда..."></textarea>
+  <div class="modal"><div class="modal-handle"></div><h3>Импорт</h3>
+    <textarea id="importArea" placeholder="Вставьте JSON..."></textarea>
     <div class="modal-actions">
       <button class="action-btn primary" onclick="doImport()">Импортировать</button>
       <button class="action-btn" onclick="closeModal('importModal')">Отмена</button>
@@ -450,203 +509,348 @@ select option{background:#1a1a26}
 <div class="toast" id="toast"></div>
 
 <script>
-// ══════════════════════════════════════════════════
+// ══════════════════════════════════════════════
 // CONSTANTS
-// ══════════════════════════════════════════════════
-const LS_KEY  = 'finplanner_v3';
-const LS_FB   = 'finplanner_fb_url';
-const MONTHS  = ['Январь','Февраль','Март','Апрель','Май','Июнь','Июль','Август','Сентябрь','Октябрь','Ноябрь','Декабрь'];
-const COLORS  = {
+// ══════════════════════════════════════════════
+const LS_KEY = 'finplanner_v4';
+const LS_FB  = 'finplanner_fb';
+const MONTHS = ['Январь','Февраль','Март','Апрель','Май','Июнь','Июль','Август','Сентябрь','Октябрь','Ноябрь','Декабрь'];
+const WEEKDAYS = ['Вс','Пн','Вт','Ср','Чт','Пт','Сб'];
+const COLORS = {
   income:  ['#00e5a0','#00c48a','#34d48a','#6ee7b7','#a7f3d0','#059669'],
   expense: ['#ff4d6d','#e63251','#ff7096','#f43f5e','#fda4af','#fb7185','#ff6b8a'],
-  debt:    ['#ffd166','#f59e0b','#fbbf24','#d97706','#fde68a'],
-  invest:  ['#7c6af7','#5b4fcf','#a78bfa','#6d28d9','#8b5cf6','#c4b5fd']
+  debt:    ['#ffd166','#f59e0b','#fbbf24','#d97706'],
+  invest:  ['#7c6af7','#5b4fcf','#a78bfa','#6d28d9','#8b5cf6']
 };
 const DEFAULT = {
   month: new Date().getMonth(), year: new Date().getFullYear(), currency:'₽',
-  income:  [{name:'Зарплата',amount:85000},{name:'Фриланс',amount:25000},{name:'Дивиденды',amount:5000}],
+  income:  [{name:'Зарплата',amount:85000},{name:'Фриланс',amount:25000}],
   expense: [{name:'Аренда жилья',amount:30000},{name:'Продукты',amount:15000},{name:'Транспорт',amount:5000},
-            {name:'Мобильная связь',amount:800},{name:'Интернет',amount:600},{name:'Кафе & Рестораны',amount:8000},{name:'Развлечения',amount:4000}],
+            {name:'Кафе & Рестораны',amount:8000},{name:'Развлечения',amount:4000}],
   debt:    [{name:'Ипотека',amount:25000},{name:'Кредит',amount:7000}],
-  invest:  [{name:'Акции',amount:10000},{name:'ОФЗ / Облигации',amount:5000},{name:'Накопит. счёт',amount:5000}]
+  invest:  [{name:'Акции',amount:10000},{name:'Накопит. счёт',amount:5000}],
+  entries: [],   // [{id,date,name,amount,type}]
+  goals:   []    // [{id,name,icon,target,saved}]
 };
 
-// ══════════════════════════════════════════════════
+// ══════════════════════════════════════════════
 // STATE
-// ══════════════════════════════════════════════════
-let state    = loadLocal();
-let fbUrl    = localStorage.getItem(LS_FB) || '';
-let saveTimer = null;
-let syncTimer = null;
+// ══════════════════════════════════════════════
+let state   = loadLocal();
+let fbUrl   = localStorage.getItem(LS_FB) || '';
+let saveTimer = null, syncTimer = null;
+let historyMonth = state.month, historyYear = state.year;
+let editingGoalId = null;
+let addToGoalId   = null;
+let qaType = 'expense';
 
-function loadLocal() {
-  try { const r=localStorage.getItem(LS_KEY); if(r) return Object.assign({},DEFAULT,JSON.parse(r)); } catch(e){}
+function loadLocal(){
+  try{ const r=localStorage.getItem(LS_KEY); if(r) return Object.assign({},DEFAULT,JSON.parse(r)); }catch(e){}
   return JSON.parse(JSON.stringify(DEFAULT));
 }
-function saveLocal() {
-  localStorage.setItem(LS_KEY, JSON.stringify(state));
-  if (fbUrl) localStorage.setItem(LS_FB, fbUrl);
-}
-function scheduleSave() {
-  clearTimeout(saveTimer);
-  saveTimer = setTimeout(()=>{ saveLocal(); scheduleCloudSync(); }, 700);
-}
-function scheduleCloudSync() {
-  if (!fbUrl) return;
-  clearTimeout(syncTimer);
-  syncTimer = setTimeout(pushToCloud, 1500);
-}
+function saveLocal(){ localStorage.setItem(LS_KEY,JSON.stringify(state)); }
+function scheduleSave(){ clearTimeout(saveTimer); saveTimer=setTimeout(()=>{saveLocal();scheduleCloudSync();},700); }
+function scheduleCloudSync(){ if(!fbUrl) return; clearTimeout(syncTimer); syncTimer=setTimeout(pushToCloud,1800); }
+function genId(){ return Date.now().toString(36)+Math.random().toString(36).slice(2,5); }
 
-// ══════════════════════════════════════════════════
-// FIREBASE REST API  (no SDK needed)
-// ══════════════════════════════════════════════════
-function fbEndpoint() {
-  // strip trailing slash, append path
-  return fbUrl.replace(/\/+$/,'') + '/finplanner.json';
-}
+// ══════════════════════════════════════════════
+// FIREBASE
+// ══════════════════════════════════════════════
+function fbEp(){ return fbUrl.replace(/\/+$/,'')+'/finplanner.json'; }
 
-async function pushToCloud() {
-  if (!fbUrl) return;
-  setSyncUI('syncing','Синхронизирую...');
-  try {
-    const res = await fetch(fbEndpoint(), {
-      method: 'PUT',
-      headers: {'Content-Type':'application/json'},
-      body: JSON.stringify({...state, _savedAt: new Date().toISOString()})
-    });
-    if (!res.ok) throw new Error('HTTP '+res.status);
-    const t = new Date().toLocaleTimeString('ru-RU',{hour:'2-digit',minute:'2-digit'});
+async function pushToCloud(){
+  if(!fbUrl) return;
+  setSyncUI('syncing','Сохраняю...');
+  try{
+    const res=await fetch(fbEp(),{method:'PUT',headers:{'Content-Type':'application/json'},body:JSON.stringify({...state,_at:new Date().toISOString()})});
+    if(!res.ok) throw new Error('HTTP '+res.status);
+    const t=new Date().toLocaleTimeString('ru-RU',{hour:'2-digit',minute:'2-digit'});
     setSyncUI('online','☁️ Сохранено в '+t);
-  } catch(e) {
-    setSyncUI('error','Ошибка синхронизации');
-    console.error('Firebase push error:', e);
-  }
+  }catch(e){ setSyncUI('error','Ошибка синхронизации'); }
 }
 
-async function loadFromCloud() {
-  if (!fbUrl) { showToast('Сначала подключите Firebase',false); return; }
-  setSyncUI('syncing','Загружаю с облака...');
-  try {
-    const res = await fetch(fbEndpoint());
-    if (!res.ok) throw new Error('HTTP '+res.status);
-    const json = await res.json();
-    if (!json) { setSyncUI('online','☁️ Облако пустое — данные не загружены'); showToast('Облако пустое',false); return; }
-    const {_savedAt, ...data} = json;
-    state = Object.assign({}, DEFAULT, data);
-    saveLocal();
-    applyStateToUI();
-    setSyncUI('online','☁️ Загружено с облака');
-    showToast('✓ Данные загружены с облака');
-  } catch(e) {
-    setSyncUI('error','Ошибка: '+e.message);
-    showToast('⚠ '+e.message, false);
-  }
+async function loadFromCloud(){
+  if(!fbUrl){ showToast('Firebase не подключён',false); return; }
+  setSyncUI('syncing','Загружаю...');
+  try{
+    const res=await fetch(fbEp()); if(!res.ok) throw new Error('HTTP '+res.status);
+    const json=await res.json();
+    if(!json){ setSyncUI('online','☁️ Облако пустое'); showToast('Облако пустое',false); return; }
+    const {_at,...data}=json;
+    state=Object.assign({},DEFAULT,data);
+    if(!state.entries) state.entries=[];
+    if(!state.goals)   state.goals=[];
+    saveLocal(); applyStateToUI();
+    setSyncUI('online','☁️ Загружено с облака'); showToast('✓ Данные загружены');
+  }catch(e){ setSyncUI('error','Ошибка: '+e.message); showToast('⚠ '+e.message,false); }
 }
 
-async function connectFirebase() {
-  const inp = document.getElementById('fbUrlInput');
-  const url = inp.value.trim();
-  if (!url) { showSyncStatus('Введите URL базы данных','warn'); return; }
-  if (!url.startsWith('https://') || !url.includes('firebaseio.com')) {
-    showSyncStatus('Неверный формат URL. Должен содержать firebaseio.com','warn'); return;
-  }
-  fbUrl = url;
-  localStorage.setItem(LS_FB, fbUrl);
-  showSyncStatus('Проверяю подключение...','info');
+async function connectFirebase(){
+  const url=document.getElementById('fbUrlInput').value.trim();
+  if(!url||!url.includes('firebaseio.com')){ showSyncStatus('Неверный URL','warn'); return; }
+  fbUrl=url; localStorage.setItem(LS_FB,fbUrl);
   setSyncUI('syncing','Подключаюсь...');
-  try {
-    // Try to read first
-    const res = await fetch(fbUrl.replace(/\/+$/,'') + '/finplanner.json');
-    if (!res.ok) throw new Error('HTTP '+res.status+' — проверьте URL и правила базы');
-    const json = await res.json();
-    if (json && json.income) {
-      // Data exists — ask user
-      if (confirm('В облаке уже есть данные. Загрузить их? (Нажмите «Отмена», чтобы загрузить свои данные в облако)')) {
-        const {_savedAt,...data} = json;
-        state = Object.assign({},DEFAULT,data);
-        saveLocal();
-        applyStateToUI();
-        showSyncStatus('✓ Подключено и данные загружены с облака','success');
-      } else {
-        await pushToCloud();
-        showSyncStatus('✓ Подключено и данные загружены в облако','success');
-      }
-    } else {
-      // Empty — push our data
-      await pushToCloud();
-      showSyncStatus('✓ Firebase подключён! Данные загружены в облако','success');
-    }
-    setSyncUI('online','☁️ Firebase подключён');
-    showToast('✓ Firebase подключён');
-  } catch(e) {
-    fbUrl='';
-    localStorage.removeItem(LS_FB);
-    setSyncUI('error','Ошибка');
-    showSyncStatus('Ошибка подключения: '+e.message+'. Проверьте URL и убедитесь, что выбрали тестовый режим.','warn');
-    showToast('⚠ '+e.message,false);
-  }
+  try{
+    const res=await fetch(fbEp()); if(!res.ok) throw new Error('HTTP '+res.status+' — проверьте правила базы');
+    const json=await res.json();
+    if(json && json.income){
+      if(confirm('В облаке есть данные. Загрузить их?')){
+        const {_at,...data}=json; state=Object.assign({},DEFAULT,data);
+        if(!state.entries) state.entries=[]; if(!state.goals) state.goals=[];
+        saveLocal(); applyStateToUI(); showSyncStatus('✓ Данные загружены с облака','success');
+      } else { await pushToCloud(); showSyncStatus('✓ Ваши данные загружены в облако','success'); }
+    } else { await pushToCloud(); showSyncStatus('✓ Firebase подключён','success'); }
+    setSyncUI('online','☁️ Firebase подключён'); showToast('✓ Firebase подключён');
+  }catch(e){ fbUrl=''; localStorage.removeItem(LS_FB); setSyncUI('error','Ошибка'); showSyncStatus('Ошибка: '+e.message,'warn'); showToast('⚠ '+e.message,false); }
 }
 
-function manualSync() {
-  if (!fbUrl) { showToast('Firebase не подключён. Перейдите в Настройки.',false); return; }
-  pushToCloud();
+function manualSync(){ if(!fbUrl){ showToast('Firebase не подключён. Перейдите в Настройки.',false); return; } pushToCloud(); }
+function disconnectCloud(){ if(!confirm('Отключить синхронизацию?')) return; fbUrl=''; localStorage.removeItem(LS_FB); document.getElementById('fbUrlInput').value=''; setSyncUI('','Локальное хранилище'); showSyncStatus('',''); showToast('Синхронизация отключена'); }
+function showSyncStatus(msg,type){ const el=document.getElementById('syncStatusBox'); if(!el) return; el.innerHTML=msg?`<div class="alert ${type}">${msg}</div>`:''; }
+function setSyncUI(status,text){
+  ['syncDot','syncDot2','syncDot3'].forEach(id=>{const e=document.getElementById(id);if(e)e.className='sync-dot '+(status||'');});
+  ['syncText','syncText2','syncText3'].forEach(id=>{const e=document.getElementById(id);if(e)e.textContent=text;});
 }
 
-function disconnectCloud() {
-  if (!confirm('Отключить синхронизацию? Данные останутся локально.')) return;
-  fbUrl = '';
-  localStorage.removeItem(LS_FB);
-  const inp=document.getElementById('fbUrlInput'); if(inp) inp.value='';
-  setSyncUI('','Локальное хранилище');
-  showSyncStatus('','');
-  showToast('Синхронизация отключена');
-}
-
-function showSyncStatus(msg, type) {
-  const el=document.getElementById('syncStatusBox'); if(!el) return;
-  if(!msg){el.innerHTML='';return;}
-  el.innerHTML=`<div class="alert ${type}">${msg}</div>`;
-}
-
-// ══════════════════════════════════════════════════
-// SYNC UI
-// ══════════════════════════════════════════════════
-function setSyncUI(status, text) {
-  ['syncDot','syncDot2'].forEach(id=>{const e=document.getElementById(id);if(e)e.className='sync-dot '+(status||'');});
-  ['syncText','syncText2'].forEach(id=>{const e=document.getElementById(id);if(e)e.textContent=text;});
-}
-
-// ══════════════════════════════════════════════════
+// ══════════════════════════════════════════════
 // NAVIGATION
-// ══════════════════════════════════════════════════
-function goPage(name, btn) {
+// ══════════════════════════════════════════════
+function goPage(name,btn){
   document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
   document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
   document.getElementById('page-'+name).classList.add('active');
   if(btn) btn.classList.add('active');
   window.scrollTo(0,0);
+  if(name==='history') renderHistory();
+  if(name==='goals')   renderGoals();
 }
 
-// ══════════════════════════════════════════════════
+// ══════════════════════════════════════════════
 // HELPERS
-// ══════════════════════════════════════════════════
+// ══════════════════════════════════════════════
 function fmt(n){ return new Intl.NumberFormat('ru-RU',{maximumFractionDigits:0}).format(n||0)+'\u202f'+state.currency; }
 function pct(a,b){ return b?Math.round(a/b*100):0; }
 function total(arr){ return arr.reduce((s,r)=>s+(parseFloat(r.amount)||0),0); }
+function todayStr(){ return new Date().toISOString().slice(0,10); }
+function fmtDate(d){
+  const dt=new Date(d+'T00:00:00');
+  return WEEKDAYS[dt.getDay()]+', '+dt.getDate()+' '+MONTHS[dt.getMonth()];
+}
 
-// ══════════════════════════════════════════════════
-// RENDER ROWS
-// ══════════════════════════════════════════════════
-function renderRows(key) {
+// ══════════════════════════════════════════════
+// QUICK ADD
+// ══════════════════════════════════════════════
+let qaFromUrl=false;
+
+function openQuickAdd(preAmount,preName,preDate){
+  qaFromUrl=false;
+  document.getElementById('qa-amount').value=preAmount||'';
+  document.getElementById('qa-name').value=preName||'';
+  document.getElementById('qa-date').value=preDate||todayStr();
+  qaSetType('expense');
+  document.getElementById('quickAddModal').classList.add('open');
+  setTimeout(()=>document.getElementById('qa-amount').focus(),300);
+}
+
+function qaSetType(t){
+  qaType=t;
+  document.getElementById('qa-expense-btn').className='cat-btn'+(t==='expense'?' selected':'');
+  document.getElementById('qa-income-btn').className='cat-btn income-cat'+(t==='income'?' selected':'');
+}
+
+function submitQuickAdd(){
+  const amount=parseFloat(document.getElementById('qa-amount').value);
+  const name=document.getElementById('qa-name').value.trim()||'Без названия';
+  const date=document.getElementById('qa-date').value||todayStr();
+  if(!amount||amount<=0){ showToast('Введите сумму',false); return; }
+  if(!state.entries) state.entries=[];
+  state.entries.push({id:genId(),date,name,amount,type:qaType});
+  state.entries.sort((a,b)=>b.date.localeCompare(a.date));
+  closeModal('quickAddModal');
+  saveLocal(); scheduleCloudSync();
+  refresh(); renderHistory();
+  showToast(qaType==='expense'?'✓ Расход добавлен':'✓ Доход добавлен');
+}
+
+// Handle URL params for Back Tap quick-add
+function checkUrlParams(){
+  const p=new URLSearchParams(location.search);
+  if(p.has('quick')){
+    openQuickAdd(p.get('amount')||'',p.get('name')||'',p.get('date')||todayStr());
+    qaFromUrl=true;
+    history.replaceState({},'',location.pathname);
+  }
+}
+
+// ══════════════════════════════════════════════
+// HISTORY PAGE
+// ══════════════════════════════════════════════
+function historyPrevMonth(){
+  historyMonth--; if(historyMonth<0){historyMonth=11;historyYear--;}
+  document.getElementById('historyMonthLabel').textContent=MONTHS[historyMonth]+' '+historyYear;
+  renderHistory();
+}
+function historyNextMonth(){
+  historyMonth++; if(historyMonth>11){historyMonth=0;historyYear++;}
+  document.getElementById('historyMonthLabel').textContent=MONTHS[historyMonth]+' '+historyYear;
+  renderHistory();
+}
+
+function renderHistory(){
+  document.getElementById('historyMonthLabel').textContent=MONTHS[historyMonth]+' '+historyYear;
+  const prefix=`${historyYear}-${String(historyMonth+1).padStart(2,'0')}`;
+  const entries=(state.entries||[]).filter(e=>e.date.startsWith(prefix));
+
+  // monthly totals
+  const inc=entries.filter(e=>e.type==='income').reduce((s,e)=>s+e.amount,0);
+  const exp=entries.filter(e=>e.type==='expense').reduce((s,e)=>s+e.amount,0);
+  document.getElementById('h-income').textContent=fmt(inc);
+  document.getElementById('h-expense').textContent=fmt(exp);
+
+  const list=document.getElementById('historyList');
+  if(!entries.length){
+    list.innerHTML=`<div class="empty-state"><div class="empty-icon">📭</div><div class="empty-text">Нет записей за ${MONTHS[historyMonth]}<br>Нажмите ＋ чтобы добавить</div></div>`;
+    return;
+  }
+
+  // group by day
+  const byDay={};
+  entries.forEach(e=>{ if(!byDay[e.date]) byDay[e.date]=[]; byDay[e.date].push(e); });
+  const days=Object.keys(byDay).sort((a,b)=>b.localeCompare(a));
+
+  list.innerHTML=days.map(day=>{
+    const dayEntries=byDay[day];
+    const dayInc=dayEntries.filter(e=>e.type==='income').reduce((s,e)=>s+e.amount,0);
+    const dayExp=dayEntries.filter(e=>e.type==='expense').reduce((s,e)=>s+e.amount,0);
+    const dayNet=dayInc-dayExp;
+    const netColor=dayNet>=0?'var(--income)':'var(--expense)';
+    const rows=dayEntries.map(e=>{
+      const col=e.type==='income'?'var(--income)':'var(--expense)';
+      const sign=e.type==='income'?'+':'-';
+      return `<div class="history-entry">
+        <div class="history-dot" style="background:${col}"></div>
+        <span class="history-name">${e.name}</span>
+        <span class="history-amount" style="color:${col}">${sign}${fmt(e.amount)}</span>
+        <button class="history-del" onclick="delEntry('${e.id}')">×</button>
+      </div>`;
+    }).join('');
+    return `<div class="history-day">
+      <div class="history-day-header">
+        <span class="history-day-label">${fmtDate(day)}</span>
+        <span class="history-day-total" style="color:${netColor}">${dayNet>=0?'+':''}${fmt(dayNet)}</span>
+      </div>${rows}</div>`;
+  }).join('');
+}
+
+function delEntry(id){
+  state.entries=(state.entries||[]).filter(e=>e.id!==id);
+  saveLocal(); scheduleCloudSync(); refresh(); renderHistory();
+  showToast('Запись удалена');
+}
+
+// ══════════════════════════════════════════════
+// GOALS PAGE
+// ══════════════════════════════════════════════
+function openAddGoal(){
+  editingGoalId=null;
+  document.getElementById('goalModalTitle').textContent='Новая цель';
+  document.getElementById('goal-name').value='';
+  document.getElementById('goal-target').value='';
+  document.getElementById('goal-saved').value='';
+  document.getElementById('goal-icon').value='🎯';
+  document.getElementById('addGoalModal').classList.add('open');
+}
+
+function openEditGoal(id){
+  const g=(state.goals||[]).find(g=>g.id===id); if(!g) return;
+  editingGoalId=id;
+  document.getElementById('goalModalTitle').textContent='Редактировать цель';
+  document.getElementById('goal-name').value=g.name;
+  document.getElementById('goal-target').value=g.target;
+  document.getElementById('goal-saved').value=g.saved;
+  document.getElementById('goal-icon').value=g.icon||'🎯';
+  document.getElementById('addGoalModal').classList.add('open');
+}
+
+function saveGoal(){
+  const name=document.getElementById('goal-name').value.trim();
+  const target=parseFloat(document.getElementById('goal-target').value)||0;
+  const saved=parseFloat(document.getElementById('goal-saved').value)||0;
+  const icon=document.getElementById('goal-icon').value||'🎯';
+  if(!name){ showToast('Введите название',false); return; }
+  if(!state.goals) state.goals=[];
+  if(editingGoalId){
+    const g=state.goals.find(g=>g.id===editingGoalId);
+    if(g){g.name=name;g.target=target;g.saved=saved;g.icon=icon;}
+  } else {
+    state.goals.push({id:genId(),name,icon,target,saved});
+  }
+  closeModal('addGoalModal');
+  saveLocal(); scheduleCloudSync(); renderGoals();
+  showToast('✓ Цель сохранена');
+}
+
+function delGoal(id){
+  if(!confirm('Удалить цель?')) return;
+  state.goals=(state.goals||[]).filter(g=>g.id!==id);
+  saveLocal(); scheduleCloudSync(); renderGoals();
+  showToast('Цель удалена');
+}
+
+function openAddToGoal(id){ addToGoalId=id; document.getElementById('atg-amount').value=''; document.getElementById('addToGoalModal').classList.add('open'); }
+
+function submitAddToGoal(){
+  const amount=parseFloat(document.getElementById('atg-amount').value)||0;
+  if(amount<=0){ showToast('Введите сумму',false); return; }
+  const g=(state.goals||[]).find(g=>g.id===addToGoalId); if(!g) return;
+  g.saved=Math.min(g.saved+amount,g.target);
+  closeModal('addToGoalModal');
+  saveLocal(); scheduleCloudSync(); renderGoals();
+  showToast('✓ Накопления обновлены');
+}
+
+function renderGoals(){
+  const list=document.getElementById('goalsList'); if(!list) return;
+  const goals=state.goals||[];
+  if(!goals.length){
+    list.innerHTML=`<div class="empty-state"><div class="empty-icon">🎯</div><div class="empty-text">Нет целей<br>Добавьте первую семейную цель накопления</div></div>`;
+    return;
+  }
+  list.innerHTML=goals.map(g=>{
+    const p=g.target?Math.min(Math.round(g.saved/g.target*100),100):0;
+    const left=Math.max(g.target-g.saved,0);
+    return `<div class="goal-card">
+      <div style="display:flex;align-items:center;gap:10px;margin-bottom:4px">
+        <span style="font-size:28px">${g.icon||'🎯'}</span>
+        <div><div class="goal-name">${g.name}</div><div class="goal-meta">Осталось: ${fmt(left)}</div></div>
+      </div>
+      <div class="goal-amounts">
+        <span class="goal-saved">${fmt(g.saved)}</span>
+        <span class="goal-target">из ${fmt(g.target)}</span>
+      </div>
+      <div class="goal-track"><div class="goal-fill" style="width:${p}%"></div></div>
+      <div class="goal-pct">${p}% выполнено</div>
+      <div class="goal-actions">
+        <button class="goal-btn primary" onclick="openAddToGoal('${g.id}')">＋ Пополнить</button>
+        <button class="goal-btn" onclick="openEditGoal('${g.id}')">✏️ Изменить</button>
+        <button class="goal-btn" onclick="delGoal('${g.id}')" style="flex:0.5;color:var(--expense)">🗑</button>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+// ══════════════════════════════════════════════
+// BUDGET ROWS
+// ══════════════════════════════════════════════
+function renderRows(key){
   const wrap=document.getElementById('rows-'+key); if(!wrap) return;
   wrap.innerHTML='';
   state[key].forEach((row,i)=>{
     const color=COLORS[key][i%COLORS[key].length];
     const div=document.createElement('div'); div.className='row-item';
-    const safeName=(row.name||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
-    div.innerHTML=`
-      <div class="row-dot" style="background:${color}"></div>
-      <input class="row-name" type="text" value="${safeName}" placeholder="Статья"
+    const safe=(row.name||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/"/g,'&quot;');
+    div.innerHTML=`<div class="row-dot" style="background:${color}"></div>
+      <input class="row-name" type="text" value="${safe}" placeholder="Статья"
         oninput="state['${key}'][${i}].name=this.value;scheduleSave();refreshCalc()">
       <input class="row-amount" type="number" value="${row.amount||''}" placeholder="0" min="0"
         style="color:${color}"
@@ -655,185 +859,133 @@ function renderRows(key) {
     wrap.appendChild(div);
   });
 }
-function addRow(key){
-  state[key].push({name:'',amount:0});
-  renderRows(key); refresh(); scheduleSave();
-  const last=document.querySelector(`#rows-${key} .row-item:last-child .row-name`);
-  if(last) last.focus();
-}
+function addRow(key){ state[key].push({name:'',amount:0}); renderRows(key); refresh(); scheduleSave(); const l=document.querySelector(`#rows-${key} .row-item:last-child .row-name`); if(l) l.focus(); }
 function delRow(key,i){ state[key].splice(i,1); renderRows(key); refresh(); scheduleSave(); }
 
-// ══════════════════════════════════════════════════
+// ══════════════════════════════════════════════
 // CHARTS
-// ══════════════════════════════════════════════════
+// ══════════════════════════════════════════════
 function drawDonut(id,values,colors,lw){
-  const canvas=document.getElementById(id); if(!canvas) return;
-  const ctx=canvas.getContext('2d');
-  if(!canvas._hi){
-    const d=window.devicePixelRatio||1;
-    const w=canvas.width,h=canvas.height;
-    canvas.width=w*d; canvas.height=h*d;
-    canvas.style.width=w+'px'; canvas.style.height=h+'px';
-    ctx.scale(d,d); canvas._hi=true;
-  }
-  const W=parseInt(canvas.style.width),H=parseInt(canvas.style.height);
+  const c=document.getElementById(id); if(!c) return;
+  const ctx=c.getContext('2d');
+  if(!c._hi){ const d=window.devicePixelRatio||1,w=c.width,h=c.height; c.width=w*d;c.height=h*d;c.style.width=w+'px';c.style.height=h+'px';ctx.scale(d,d);c._hi=true; }
+  const W=parseInt(c.style.width),H=parseInt(c.style.height);
   ctx.clearRect(0,0,W,H);
   const cx=W/2,cy=H/2,r=Math.min(W,H)/2-lw/2;
   const sum=values.reduce((a,b)=>a+b,0);
   if(!sum){ctx.beginPath();ctx.arc(cx,cy,r,0,Math.PI*2);ctx.strokeStyle='#252535';ctx.lineWidth=lw;ctx.stroke();return;}
   let a=-Math.PI/2;
-  values.forEach((v,i)=>{
-    if(!v) return;
-    const s=(v/sum)*Math.PI*2;
-    ctx.beginPath();ctx.arc(cx,cy,r,a,a+s);
-    ctx.strokeStyle=colors[i%colors.length];ctx.lineWidth=lw;ctx.lineCap='butt';ctx.stroke();
-    a+=s;
-  });
+  values.forEach((v,i)=>{if(!v)return;const s=(v/sum)*Math.PI*2;ctx.beginPath();ctx.arc(cx,cy,r,a,a+s);ctx.strokeStyle=colors[i%colors.length];ctx.lineWidth=lw;ctx.lineCap='butt';ctx.stroke();a+=s;});
 }
 function buildLegend(id,arr,colors){
   const el=document.getElementById(id); if(!el) return;
-  el.innerHTML=arr.map((r,i)=>`
-    <div class="legend-row">
-      <div class="legend-dot" style="background:${colors[i%colors.length]}"></div>
-      <span class="legend-name">${r.name||'—'}</span>
-      <span class="legend-val">${fmt(r.amount)}</span>
-    </div>`).join('');
+  el.innerHTML=arr.map((r,i)=>`<div class="legend-row"><div class="legend-dot" style="background:${colors[i%colors.length]}"></div><span class="legend-name">${r.name||'—'}</span><span class="legend-val">${fmt(r.amount)}</span></div>`).join('');
 }
 function drawBars(){
   const el=document.getElementById('barsOverview'); if(!el) return;
-  const cats=[
-    {l:'Доход', v:total(state.income), c:'#00e5a0'},
-    {l:'Расход',v:total(state.expense),c:'#ff4d6d'},
-    {l:'Долги', v:total(state.debt),   c:'#ffd166'},
-    {l:'Инвест',v:total(state.invest), c:'#7c6af7'}
-  ];
+  const cats=[{l:'Доход',v:total(state.income),c:'#00e5a0'},{l:'Расход',v:total(state.expense),c:'#ff4d6d'},{l:'Долги',v:total(state.debt),c:'#ffd166'},{l:'Инвест',v:total(state.invest),c:'#7c6af7'}];
   const max=Math.max(...cats.map(c=>c.v),1);
-  el.innerHTML=cats.map(c=>{
-    const h=Math.round((c.v/max)*85);
-    return `<div class="bar-col">
-      <div class="bar-amount">${new Intl.NumberFormat('ru-RU',{notation:'compact',maximumFractionDigits:0}).format(c.v)}</div>
-      <div style="flex:1;width:100%;display:flex;align-items:flex-end">
-        <div class="bar-body" style="height:${h}px;background:${c.c}"></div>
-      </div>
-      <div class="bar-label">${c.l}</div>
-    </div>`;
-  }).join('');
+  el.innerHTML=cats.map(c=>{const h=Math.round((c.v/max)*85);return `<div class="bar-col"><div class="bar-amount">${new Intl.NumberFormat('ru-RU',{notation:'compact',maximumFractionDigits:0}).format(c.v)}</div><div style="flex:1;width:100%;display:flex;align-items:flex-end"><div class="bar-body" style="height:${h}px;background:${c.c}"></div></div><div class="bar-label">${c.l}</div></div>`;}).join('');
 }
 function buildProgress(){
   const inc=total(state.income),exp=total(state.expense),dbt=total(state.debt),inv=total(state.invest);
-  const el=document.getElementById('progressWrap'); if(!el) return;
-  [{l:'Расходы',c:'#ff4d6d',v:exp},{l:'Долги',c:'#ffd166',v:dbt},{l:'Инвестиции',c:'#7c6af7',v:inv}]
-  .forEach(it=>{
+  const el=document.getElementById('progressWrap'); if(!el) return; el.innerHTML='';
+  [{l:'Расходы',c:'#ff4d6d',v:exp},{l:'Долги',c:'#ffd166',v:dbt},{l:'Инвестиции',c:'#7c6af7',v:inv}].forEach(it=>{
     const p=Math.min(pct(it.v,inc),100);
-    el.innerHTML+= `<div class="progress-row">
-      <div class="progress-label">${it.l}</div>
-      <div class="progress-track"><div class="progress-fill" style="width:${p}%;background:${it.c}"></div></div>
-      <div class="progress-pct">${p}%</div>
-    </div>`;
+    el.innerHTML+=`<div class="progress-row"><div class="progress-label">${it.l}</div><div class="progress-track"><div class="progress-fill" style="width:${p}%;background:${it.c}"></div></div><div class="progress-pct">${p}%</div></div>`;
   });
 }
 
-// ══════════════════════════════════════════════════
+// ══════════════════════════════════════════════
 // REFRESH
-// ══════════════════════════════════════════════════
+// ══════════════════════════════════════════════
 function refreshCalc(){
   const inc=total(state.income),exp=total(state.expense),dbt=total(state.debt),inv=total(state.invest);
-  const bal=inc-exp-dbt-inv;
+  // add history entries for current month
+  const prefix=`${state.year}-${String(state.month+1).padStart(2,'0')}`;
+  const hInc=(state.entries||[]).filter(e=>e.date.startsWith(prefix)&&e.type==='income').reduce((s,e)=>s+e.amount,0);
+  const hExp=(state.entries||[]).filter(e=>e.date.startsWith(prefix)&&e.type==='expense').reduce((s,e)=>s+e.amount,0);
+  const totalInc=inc+hInc, totalExp=exp+hExp;
+  const bal=totalInc-totalExp-dbt-inv;
+
   ['income','expense','debt','invest'].forEach(k=>{
     const a=document.getElementById('kpi-'+k); if(a) a.textContent=fmt(total(state[k]));
     const b=document.getElementById('pt-'+k);  if(b) b.textContent=fmt(total(state[k]));
   });
-  const bv=document.getElementById('balanceVal');
-  if(bv){bv.textContent=fmt(bal);bv.style.color=bal>=0?'var(--income)':'var(--expense)';}
+  // Override income/expense KPI with history-inclusive totals
+  const ki=document.getElementById('kpi-income'); if(ki) ki.textContent=fmt(totalInc);
+  const ke=document.getElementById('kpi-expense'); if(ke) ke.textContent=fmt(totalExp);
+
+  const bv=document.getElementById('balanceVal'); if(bv){bv.textContent=fmt(bal);bv.style.color=bal>=0?'var(--income)':'var(--expense)';}
   const bs=document.getElementById('balanceSub'); if(bs) bs.textContent=bal>=0?'Всё в порядке 👍':'Расходы превышают доходы ⚠️';
   const bi=document.getElementById('balanceIcon'); if(bi) bi.textContent=bal>=0?(bal>50000?'🤑':'💰'):'😬';
-  const dv=document.getElementById('donutExpVal'); if(dv) dv.textContent=new Intl.NumberFormat('ru-RU',{maximumFractionDigits:0}).format(exp||0);
+  const dv=document.getElementById('donutExpVal'); if(dv) dv.textContent=new Intl.NumberFormat('ru-RU',{maximumFractionDigits:0}).format(totalExp||0);
   const hp=document.getElementById('headerPeriod'); if(hp) hp.textContent=MONTHS[state.month]+' '+state.year;
-  const iS=document.getElementById('iSavings');if(iS)iS.textContent=pct(inv,inc)+'%';
-  const iD=document.getElementById('iDebt');   if(iD)iD.textContent=pct(dbt,inc)+'%';
-  const iE=document.getElementById('iExpense');if(iE)iE.textContent=pct(exp,inc)+'%';
+  const iS=document.getElementById('iSavings');if(iS)iS.textContent=pct(inv,totalInc)+'%';
+  const iD=document.getElementById('iDebt');   if(iD)iD.textContent=pct(dbt,totalInc)+'%';
+  const iE=document.getElementById('iExpense');if(iE)iE.textContent=pct(totalExp,totalInc)+'%';
   const iF=document.getElementById('iFree');   if(iF){iF.textContent=fmt(bal);iF.style.color=bal>=0?'var(--invest)':'var(--expense)';}
 }
 function refresh(){
   refreshCalc();
-  document.getElementById('progressWrap').innerHTML='';
   drawDonut('donutExpense',state.expense.map(r=>r.amount||0),COLORS.expense,26);
-  drawDonut('donutIncome', state.income.map(r=>r.amount||0), COLORS.income,18);
   buildLegend('legendExpense',state.expense,COLORS.expense);
-  buildLegend('legendIncome', state.income, COLORS.income);
-  buildProgress();
-  drawBars();
+  buildProgress(); drawBars();
 }
 
-// ══════════════════════════════════════════════════
+// ══════════════════════════════════════════════
 // EXPORT / IMPORT
-// ══════════════════════════════════════════════════
-function openExport(){document.getElementById('exportArea').value=JSON.stringify(state,null,2);document.getElementById('exportModal').classList.add('open');}
-function copyExport(){const t=document.getElementById('exportArea');t.select();navigator.clipboard.writeText(t.value).then(()=>showToast('✓ Скопировано'));}
-function downloadExport(){
-  const b=new Blob([document.getElementById('exportArea').value],{type:'application/json'});
-  const a=document.createElement('a');a.href=URL.createObjectURL(b);
-  a.download=`finance_${state.year}_${String(state.month+1).padStart(2,'0')}.json`;a.click();
-  showToast('✓ Файл скачан');
-}
-function openImport(){document.getElementById('importArea').value='';document.getElementById('importModal').classList.add('open');}
-function doImport(){
-  try{
-    const p=JSON.parse(document.getElementById('importArea').value);
-    if(!p.income||!p.expense) throw new Error('Некорректный формат');
-    state=Object.assign({},DEFAULT,p); saveLocal(); applyStateToUI();
-    closeModal('importModal'); showToast('✓ Данные импортированы');
-  }catch(e){showToast('⚠ '+e.message,false);}
-}
-function closeModal(id){document.getElementById(id).classList.remove('open');}
+// ══════════════════════════════════════════════
+function openExport(){ document.getElementById('exportArea').value=JSON.stringify(state,null,2); document.getElementById('exportModal').classList.add('open'); }
+function copyExport(){ const t=document.getElementById('exportArea');t.select();navigator.clipboard.writeText(t.value).then(()=>showToast('✓ Скопировано')); }
+function downloadExport(){ const b=new Blob([document.getElementById('exportArea').value],{type:'application/json'});const a=document.createElement('a');a.href=URL.createObjectURL(b);a.download=`finance_${state.year}_${state.month+1}.json`;a.click(); showToast('✓ Файл скачан'); }
+function openImport(){ document.getElementById('importArea').value=''; document.getElementById('importModal').classList.add('open'); }
+function doImport(){ try{const p=JSON.parse(document.getElementById('importArea').value);if(!p.income||!p.expense) throw new Error('Некорректный формат');state=Object.assign({},DEFAULT,p);if(!state.entries)state.entries=[];if(!state.goals)state.goals=[];saveLocal();applyStateToUI();closeModal('importModal');showToast('✓ Импортировано');}catch(e){showToast('⚠ '+e.message,false);} }
+function closeModal(id){ document.getElementById(id).classList.remove('open'); }
 document.querySelectorAll('.modal-backdrop').forEach(el=>el.addEventListener('click',e=>{if(e.target===el)el.classList.remove('open');}));
 
-// ══════════════════════════════════════════════════
-// RESET
-// ══════════════════════════════════════════════════
-function confirmReset(){
-  if(confirm('Сбросить все данные к демо-значениям?')){
-    state=JSON.parse(JSON.stringify(DEFAULT)); saveLocal(); applyStateToUI(); showToast('✓ Данные сброшены');
-  }
-}
-
-// ══════════════════════════════════════════════════
-// TOAST
-// ══════════════════════════════════════════════════
+// ══════════════════════════════════════════════
+// RESET & TOAST
+// ══════════════════════════════════════════════
+function confirmReset(){ if(confirm('Сбросить все данные?')){ state=JSON.parse(JSON.stringify(DEFAULT)); saveLocal(); applyStateToUI(); showToast('✓ Сброшено'); } }
 let toastT;
-function showToast(msg,ok=true){
-  const el=document.getElementById('toast');
-  el.textContent=msg; el.className='toast show '+(ok?'ok':'err');
-  clearTimeout(toastT); toastT=setTimeout(()=>el.classList.remove('show'),2800);
-}
+function showToast(msg,ok=true){ const el=document.getElementById('toast');el.textContent=msg;el.className='toast show '+(ok?'ok':'err');clearTimeout(toastT);toastT=setTimeout(()=>el.classList.remove('show'),2800); }
 
-// ══════════════════════════════════════════════════
-// SETTINGS CONTROLS
-// ══════════════════════════════════════════════════
-document.getElementById('selMonth').addEventListener('change',function(){state.month=+this.value;scheduleSave();refresh();});
-document.getElementById('selYear').addEventListener('change',function(){state.year=+this.value;scheduleSave();refresh();});
+// ══════════════════════════════════════════════
+// SETTINGS LISTENERS
+// ══════════════════════════════════════════════
+document.getElementById('selMonth').addEventListener('change',function(){state.month=+this.value;scheduleSave();refresh();historyMonth=state.month;renderHistory();});
+document.getElementById('selYear').addEventListener('change',function(){state.year=+this.value;scheduleSave();refresh();historyYear=state.year;renderHistory();});
 document.getElementById('selCurrency').addEventListener('change',function(){state.currency=this.value;scheduleSave();refresh();});
 
-// ══════════════════════════════════════════════════
+// ══════════════════════════════════════════════
+// QUICK ADD URL (Back Tap)
+// ══════════════════════════════════════════════
+function copyQuickUrl(){ const u=document.getElementById('quickAddUrl').value; navigator.clipboard.writeText(u).then(()=>showToast('✓ Ссылка скопирована')); }
+function setQuickUrl(){ const base=location.origin+location.pathname; document.getElementById('quickAddUrl').value=base+'?quick=1'; }
+
+// ══════════════════════════════════════════════
 // APPLY STATE → UI
-// ══════════════════════════════════════════════════
+// ══════════════════════════════════════════════
 function applyStateToUI(){
   const sm=document.getElementById('selMonth');    if(sm) sm.value=state.month;
   const sy=document.getElementById('selYear');     if(sy) sy.value=state.year;
   const sc=document.getElementById('selCurrency'); if(sc) sc.value=state.currency;
   const fi=document.getElementById('fbUrlInput');  if(fi) fi.value=fbUrl||'';
+  historyMonth=state.month; historyYear=state.year;
   ['income','expense','debt','invest'].forEach(k=>renderRows(k));
-  refresh();
+  refresh(); renderHistory(); renderGoals();
   if(fbUrl) setSyncUI('online','☁️ Firebase подключён');
   else setSyncUI('','Локальное хранилище');
+  setQuickUrl();
 }
 
-// ══════════════════════════════════════════════════
+// ══════════════════════════════════════════════
 // INIT
-// ══════════════════════════════════════════════════
+// ══════════════════════════════════════════════
 applyStateToUI();
-// Auto-load from cloud on start
-if(fbUrl){ setTimeout(loadFromCloud, 600); }
+checkUrlParams();
+if(fbUrl) setTimeout(loadFromCloud,600);
 </script>
 </body>
 </html>
