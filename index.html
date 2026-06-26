@@ -548,7 +548,11 @@ function loadLocal(){
   try{ const r=localStorage.getItem(LS_KEY); if(r) return Object.assign({},DEFAULT,JSON.parse(r)); }catch(e){}
   return JSON.parse(JSON.stringify(DEFAULT));
 }
-function saveLocal(){ localStorage.setItem(LS_KEY,JSON.stringify(state)); }
+function saveLocal(){
+  // Метка времени последнего локального сохранения
+  state._localAt = new Date().toISOString();
+  localStorage.setItem(LS_KEY, JSON.stringify(state));
+}
 function scheduleSave(){ clearTimeout(saveTimer); saveTimer=setTimeout(()=>{saveLocal();scheduleCloudSync();},700); }
 function scheduleCloudSync(){ if(!fbUrl) return; clearTimeout(syncTimer); syncTimer=setTimeout(pushToCloud,1800); }
 function genId(){ return Date.now().toString(36)+Math.random().toString(36).slice(2,5); }
@@ -569,20 +573,34 @@ async function pushToCloud(){
   }catch(e){ setSyncUI('error','Ошибка синхронизации'); }
 }
 
-async function loadFromCloud(){
-  if(!fbUrl){ showToast('Firebase не подключён',false); return; }
-  setSyncUI('syncing','Загружаю...');
+async function loadFromCloud(silent){
+  if(!fbUrl){ if(!silent) showToast('Firebase не подключён',false); return; }
+  setSyncUI('syncing','Синхронизирую...');
   try{
     const res=await fetch(fbEp()); if(!res.ok) throw new Error('HTTP '+res.status);
     const json=await res.json();
-    if(!json){ setSyncUI('online','☁️ Облако пустое'); showToast('Облако пустое',false); return; }
-    const {_at,...data}=json;
-    state=Object.assign({},DEFAULT,data);
-    if(!state.entries) state.entries=[];
-    if(!state.goals)   state.goals=[];
-    saveLocal(); applyStateToUI();
-    setSyncUI('online','☁️ Загружено с облака'); showToast('✓ Данные загружены');
-  }catch(e){ setSyncUI('error','Ошибка: '+e.message); showToast('⚠ '+e.message,false); }
+    if(!json){ setSyncUI('online','☁️ Облако пустое — загружены локальные'); return; }
+
+    const cloudAt  = json._at      || '1970-01-01';
+    const localAt  = state._localAt || '1970-01-01';
+
+    if(cloudAt > localAt){
+      // Облако свежее — берём его
+      const {_at,_localAt,...data}=json;
+      state=Object.assign({},DEFAULT,data);
+      if(!state.entries) state.entries=[];
+      if(!state.goals)   state.goals=[];
+      state._localAt = cloudAt; // запоминаем метку
+      localStorage.setItem(LS_KEY, JSON.stringify(state));
+      applyStateToUI();
+      setSyncUI('online','☁️ Загружено с облака');
+      if(!silent) showToast('✓ Данные загружены с облака');
+    } else {
+      // Локальные данные свежее — пушим их в облако
+      await pushToCloud();
+      if(!silent) showToast('✓ Ваши данные актуальнее — загружены в облако');
+    }
+  }catch(e){ setSyncUI('error','Ошибка: '+e.message); if(!silent) showToast('⚠ '+e.message,false); }
 }
 
 async function connectFirebase(){
@@ -604,8 +622,7 @@ async function connectFirebase(){
   }catch(e){ fbUrl=''; localStorage.removeItem(LS_FB); setSyncUI('error','Ошибка'); showSyncStatus('Ошибка: '+e.message,'warn'); showToast('⚠ '+e.message,false); }
 }
 
-function manualSync(){ if(!fbUrl){ showToast('Firebase не подключён. Перейдите в Настройки.',false); return; } pushToCloud(); }
-function disconnectCloud(){ if(!confirm('Отключить синхронизацию?')) return; fbUrl=''; localStorage.removeItem(LS_FB); document.getElementById('fbUrlInput').value=''; setSyncUI('','Локальное хранилище'); showSyncStatus('',''); showToast('Синхронизация отключена'); }
+function manualSync(){ if(!fbUrl){ showToast('Firebase не подключён. Перейдите в Настройки.',false); return; } pushToCloud(); }function disconnectCloud(){ if(!confirm('Отключить синхронизацию?')) return; fbUrl=''; localStorage.removeItem(LS_FB); document.getElementById('fbUrlInput').value=''; setSyncUI('','Локальное хранилище'); showSyncStatus('',''); showToast('Синхронизация отключена'); }
 function showSyncStatus(msg,type){ const el=document.getElementById('syncStatusBox'); if(!el) return; el.innerHTML=msg?`<div class="alert ${type}">${msg}</div>`:''; }
 function setSyncUI(status,text){
   ['syncDot','syncDot2','syncDot3'].forEach(id=>{const e=document.getElementById(id);if(e)e.className='sync-dot '+(status||'');});
@@ -1029,7 +1046,8 @@ function applyStateToUI(){
 // ══════════════════════════════════════════════
 applyStateToUI();
 checkUrlParams();
-if(fbUrl) setTimeout(loadFromCloud,600);
+// При старте: тихо сравниваем с облаком и берём свежее
+if(fbUrl) setTimeout(()=>loadFromCloud(true), 800);
 </script>
 </body>
 </html>
